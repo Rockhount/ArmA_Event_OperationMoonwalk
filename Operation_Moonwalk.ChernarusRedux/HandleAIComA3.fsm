@@ -1,0 +1,242 @@
+/*%FSM<COMPILE "C:\Program Files (x86)\Steam\steamapps\common\Arma 3 Tools\FSMEditor\scriptedFSM.cfg, HandleAIComA3">*/
+/*%FSM<HEAD>*/
+/*
+item0[] = {"Start",0,250,-40.000000,-145.000000,50.000000,-95.000000,0.000000,"Start"};
+item1[] = {"HeadlessClient",4,218,75.000000,-145.000000,165.000000,-95.000000,0.000000,"HeadlessClient"};
+item2[] = {"End",1,250,75.000000,-55.000000,165.000000,-5.000000,0.000000,"End"};
+item3[] = {"Server",4,218,-40.000000,-55.000000,50.000000,-5.000000,0.000000,"Server"};
+item4[] = {"Loop",2,250,-40.000000,30.000000,50.000000,80.000000,0.000000,"Loop"};
+item5[] = {"wait",4,218,75.000000,30.000000,165.000000,80.000000,0.000000,"wait"};
+item6[] = {"HumanPlayer",4,218,-155.000000,-145.000000,-65.000000,-95.000000,0.000000,"HumanPlayer"};
+item7[] = {"Loop_1",2,4346,-155.000000,-55.000000,-65.000000,-5.000000,0.000000,"Loop"};
+item8[] = {"wait",4,218,-155.000000,30.000000,-65.000000,80.000000,0.000000,"wait"};
+link0[] = {0,1};
+link1[] = {0,3};
+link2[] = {0,6};
+link3[] = {1,2};
+link4[] = {3,4};
+link5[] = {4,5};
+link6[] = {5,4};
+link7[] = {6,7};
+link8[] = {7,8};
+link9[] = {8,7};
+globals[] = {0.000000,0,0,0,0,640,480,1,19,6316128,1,-228.560394,383.209381,362.766785,-259.148438,603,587,1};
+window[] = {0,-1,-1,-1,-1,863,104,1486,104,1,621};
+*//*%FSM</HEAD>*/
+class FSM
+{
+        fsmName = "HandleAIComA3";
+        class States
+        {
+                /*%FSM<STATE "Start">*/
+                class Start
+                {
+                        name = "Start";
+                        itemno = 0;
+                        init = /*%FSM<STATEINIT""">*/"Private [""_Time"", ""_Time2"", ""_Local_var_Result"", ""_Local_var_EnemysData"", ""_Local_var_ObjectsData"", ""_Local_var_CivsData""];" \n
+                         "Global_var_CachedUnits = [];" \n
+                         "if ((!isServer) && {hasInterface}) then" \n
+                         "{" \n
+                         "	_Time2 = time;" \n
+                         "};" \n
+                         "if (isServer) then" \n
+                         "{" \n
+                         "	Global_var_LoopCount = Global_var_LoopCount + 1;" \n
+                         "};"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "Server">*/
+                                class Server
+                                {
+                                        itemno = 3;
+                                        priority = 0.000000;
+                                        to="Loop";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"isDedicated && {!isNil ""Global_var_Civs""}"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                                /*%FSM<LINK "HumanPlayer">*/
+                                class HumanPlayer
+                                {
+                                        itemno = 6;
+                                        priority = 0.000000;
+                                        to="Loop_1";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"!isServer && {hasInterface}"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                                /*%FSM<LINK "HeadlessClient">*/
+                                class HeadlessClient
+                                {
+                                        itemno = 1;
+                                        priority = 0.000000;
+                                        to="End";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"!isServer && {!hasInterface}"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "End">*/
+                class End
+                {
+                        name = "End";
+                        itemno = 2;
+                        init = /*%FSM<STATEINIT""">*/""/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Loop">*/
+                class Loop
+                {
+                        name = "Loop";
+                        itemno = 4;
+                        init = /*%FSM<STATEINIT""">*/"_Time = time + 4.5 + (random 0.5);" \n
+                         "_Local_var_EnemysData = [];" \n
+                         "_Local_var_ObjectsData = [];" \n
+                         "_Local_var_CivsData = [];" \n
+                         "{" \n
+                         "	if ((local _x) && {side _x != civilian}) then" \n
+                         "	{" \n
+                         "		_Local_var_EnemysData pushBack [netId _x,getPos _x];" \n
+                         "	};" \n
+                         "} forEach (allUnits + allDeadMen - vehicles - allPlayers);" \n
+                         "{" \n
+                         "	if ((simulationEnabled _x) && {!((typeOf _x) in [""ACE_G_Chemlight_White"",""Chemlight_red"",""Chemlight_yellow"",""Chemlight_blue"",""Chemlight_yellow""])}) then" \n
+                         "	{" \n
+                         "		_Local_var_ObjectsData pushBack [netId _x,getPos _x];" \n
+                         "	};" \n
+                         "} forEach (vehicles - allUnits - allDeadMen);" \n
+                         "{" \n
+                         "	_Local_var_CityIndex = _forEachIndex;" \n
+                         "	{" \n
+                         "		_Local_var_CivsData pushBack [netId _x,getPos _x,_Local_var_CityIndex,_forEachIndex];" \n
+                         "	} forEach _x;" \n
+                         "} foreach Global_var_Civs;" \n
+                         "_Local_var_Result = ""HandleServer"" callExtension (Global_var_ServerIP + ""|"" + Global_var_UMissionID + ""|"" + str [""AddObjectsData"",_Local_var_EnemysData,_Local_var_ObjectsData,_Local_var_CivsData]);" \n
+                         "if ((!isNil ""_Local_var_Result"") && {_Local_var_Result != """"}) then" \n
+                         "{" \n
+                         "	diag_log _Local_var_Result;" \n
+                         "};"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "wait">*/
+                                class wait
+                                {
+                                        itemno = 5;
+                                        priority = 0.000000;
+                                        to="Loop";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"time > _Time"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Loop_1">*/
+                class Loop_1
+                {
+                        name = "Loop_1";
+                        itemno = 7;
+                        init = /*%FSM<STATEINIT""">*/"_Local_var_Result = call compile (""HandleClient"" callExtension str [""GetCacheData"",netID Player,getPos Player,Global_var_ServerIP4Player]);" \n
+                         "if (!isNil ""_Local_var_Result"") then" \n
+                         "{" \n
+                         "	if (typeName _Local_var_Result == ""ARRAY"") then" \n
+                         "	{" \n
+                         "		private _Local_var_Enable = [];" \n
+                         "		private _Local_var_Disable = [];" \n
+                         "		Private [""_Local_var_CurUnit""];" \n
+                         "		{" \n
+                         "			_Local_var_CurUnit = objectFromNetId _x;" \n
+                         "			if (!isNull _Local_var_CurUnit) then" \n
+                         "			{" \n
+                         "				_Local_var_CurUnit enableSimulation false;" \n
+                         "				_Local_var_CurUnit hideObject true;" \n
+                         "				_Local_var_Disable pushBack _Local_var_CurUnit;" \n
+                         "			};" \n
+                         "		} forEach (_Local_var_Result select 0);" \n
+                         "		{" \n
+                         "			_Local_var_CurUnit = objectFromNetId _x;" \n
+                         "			if (!isNull _Local_var_CurUnit) then" \n
+                         "			{" \n
+                         "				if (simulationEnabled _Local_var_CurUnit) then" \n
+                         "				{" \n
+                         "					_Local_var_CurUnit spawn" \n
+                         "					{" \n
+                         "						sleep 2.5;" \n
+                         "						_this enableSimulation true;" \n
+                         "						_this hideObject false;" \n
+                         "					};" \n
+                         "				}" \n
+                         "				else" \n
+                         "				{" \n
+                         "					_Local_var_CurUnit enableSimulation true;" \n
+                         "					_Local_var_CurUnit hideObject false;" \n
+                         "				};" \n
+                         "				_Local_var_Enable pushBack _Local_var_CurUnit;" \n
+                         "			};" \n
+                         "		} forEach (_Local_var_Result select 1);" \n
+                         "		Global_var_CachedUnits = Global_var_CachedUnits + _Local_var_Disable - _Local_var_Enable - [objNull];" \n
+                         "	}" \n
+                         "	else" \n
+                         "	{" \n
+                         "		diag_log _Local_var_Result;" \n
+                         "	};" \n
+                         "};" \n
+                         "if (time > _Time2) then" \n
+                         "{" \n
+                         "	_Local_var_DistantUnits = Global_var_CachedUnits - [objNull];" \n
+                         "	{" \n
+                         "		if ((!simulationEnabled _x) && {((_x distance Player) < Global_var_CacheDistance) && {side _x != civilian}}) then" \n
+                         "		{" \n
+                         "			_x spawn" \n
+                         "			{" \n
+                         "				_this enableSimulation true;" \n
+                         "				sleep 1;" \n
+                         "				_this enableSimulation false;" \n
+                         "				if ((_this distance Player) < Global_var_CacheDistance) then" \n
+                         "				{" \n
+                         "					_this enableSimulation true;" \n
+                         "					_this hideObject false;" \n
+                         "				};" \n
+                         "			};" \n
+                         "		};" \n
+                         "	} forEach _Local_var_DistantUnits;" \n
+                         "	_Time2 = time + 9.5 + (random 0.5);" \n
+                         "};" \n
+                         "_Time = time + 2.5 + (random 0.5);"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "wait">*/
+                                class wait
+                                {
+                                        itemno = 8;
+                                        priority = 0.000000;
+                                        to="Loop_1";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"time > _Time"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+        };
+        initState="Start";
+        finalStates[] =
+        {
+                "End",
+        };
+};
+/*%FSM</COMPILE>*/

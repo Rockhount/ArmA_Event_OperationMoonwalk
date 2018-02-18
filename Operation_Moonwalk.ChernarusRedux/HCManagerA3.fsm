@@ -1,0 +1,973 @@
+/*%FSM<COMPILE "C:\Program Files (x86)\Steam\steamapps\common\Arma 3 Tools\FSMEditor\scriptedFSM.cfg, HCManagerA3">*/
+/*%FSM<HEAD>*/
+/*
+item0[] = {"Start",0,250,-40.348839,-141.860458,49.651161,-91.860458,0.000000,"Start"};
+item1[] = {"Player",4,218,70.930229,-142.441864,160.930237,-92.441864,0.000000,"Player"};
+item2[] = {"Headless",4,218,-155.813934,-141.279053,-65.813950,-91.279076,0.000000,"Headless"};
+item3[] = {"Server",4,218,-39.534897,-225.581390,50.465103,-175.581390,0.000000,"Server"};
+item4[] = {"Init1",2,250,70.930229,-224.999985,160.930267,-174.999985,0.000000,"Init1"};
+item5[] = {"Init1_1",2,250,-155.813934,-225.581375,-65.813942,-175.581375,0.000000,"Init1"};
+item6[] = {"_",8,218,-155.813934,-313.372070,-65.813950,-263.372070,0.000000,""};
+item7[] = {"Init2",2,250,-39.534897,-312.790680,50.465118,-262.790680,0.000000,"Init2"};
+item8[] = {"wait",4,218,-39.534889,-395.930206,50.465118,-345.930206,0.000000,"wait"};
+item9[] = {"Cache_HCCheck",2,250,70.930237,-395.348846,160.930176,-345.348846,0.000000,"Cache+HCCheck"};
+item10[] = {"End",1,250,184.883728,-143.023270,274.883759,-93.023285,0.000000,"End"};
+item11[] = {"_",8,218,184.883728,-225.581406,274.883728,-175.581406,0.000000,""};
+item12[] = {"Init2_1",2,250,184.883728,-313.372131,274.883759,-263.372131,0.000000,"Init2"};
+item13[] = {"wait",4,218,184.883728,-395.348846,274.883789,-345.348846,0.000000,"wait"};
+item14[] = {"Cache_Ping",2,4346,-155.813995,-395.348877,-65.813927,-345.348877,0.000000,"Cache+Ping"};
+link0[] = {0,1};
+link1[] = {0,2};
+link2[] = {0,3};
+link3[] = {1,10};
+link4[] = {2,5};
+link5[] = {3,4};
+link6[] = {4,11};
+link7[] = {5,6};
+link8[] = {6,7};
+link9[] = {7,8};
+link10[] = {8,14};
+link11[] = {9,13};
+link12[] = {11,12};
+link13[] = {12,13};
+link14[] = {13,9};
+link15[] = {14,8};
+globals[] = {0.000000,0,0,0,0,640,480,1,16,6316128,1,-313.218384,314.434753,-55.159401,-427.980499,675,587,1};
+window[] = {0,-1,-1,-1,-1,967,208,1487,208,1,693};
+*//*%FSM</HEAD>*/
+class FSM
+{
+        fsmName = "HCManagerA3";
+        class States
+        {
+                /*%FSM<STATE "Start">*/
+                class Start
+                {
+                        name = "Start";
+                        itemno = 0;
+                        init = /*%FSM<STATEINIT""">*/""/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "Headless">*/
+                                class Headless
+                                {
+                                        itemno = 2;
+                                        priority = 0.000000;
+                                        to="Init1_1";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"!isServer && {(!hasInterface) && {!isNull Player}}"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                                /*%FSM<LINK "Server">*/
+                                class Server
+                                {
+                                        itemno = 3;
+                                        priority = 0.000000;
+                                        to="Init1";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"isDedicated"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                                /*%FSM<LINK "Player">*/
+                                class Player
+                                {
+                                        itemno = 1;
+                                        priority = 0.000000;
+                                        to="End";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"!isServer && {hasInterface}"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Init1">*/
+                class Init1
+                {
+                        name = "Init1";
+                        itemno = 4;
+                        init = /*%FSM<STATEINIT""">*/"//States with over 300LOCs cause FSM erros" \n
+                         """Public_fnc_GroupFunctions"" addPublicVariableEventHandler" \n
+                         "{" \n
+                         "	switch ((_this select 1) select 0) do" \n
+                         "	{" \n
+                         "		case 0://[Modus, Grp]" \n
+                         "		{" \n
+                         "			{" \n
+                         "				_x enableSimulation false;" \n
+                         "				_x addEventHandler [""killed"", {""HandleServer"" callExtension (Global_var_ServerIP + ""|"" + Global_var_UMissionID + ""|"" + str [""AddObjectToDelete"",1,netId (_this select 0)])}];" \n
+                         "			} forEach units ((_this select 1) select 1);" \n
+                         "			((_this select 1) select 1) setVariable [""GroupCommands""," \n
+                         "			""" \n
+                         "				{" \n
+                         "					_x enableSimulation true;" \n
+                         "				} forEach units _this;" \n
+                         "				if (count Global_var_HCIDs > 0) then" \n
+                         "				{" \n
+                         "					Public_fnc_HCTask = [1, _this, 0];" \n
+                         "					(selectRandom Global_var_HCIDs) publicVariableClient 'Public_fnc_HCTask';" \n
+                         "				}" \n
+                         "				else" \n
+                         "				{" \n
+                         "					_this setBehaviour 'AWARE';" \n
+                         "					_this setCombatMode 'RED';" \n
+                         "					{" \n
+                         "						if (alive _x) then" \n
+                         "						{" \n
+                         "							_x enableSimulation true;" \n
+                         "							_x setUnitPos 'UP';" \n
+                         "							_x addEventHandler ['killed', {'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['AddObjectToDelete',1,netId (_this select 0)])}];" \n
+                         "						}" \n
+                         "						else" \n
+                         "						{" \n
+                         "							'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['AddObjectToDelete',1,netId _x]);" \n
+                         "						};" \n
+                         "					} forEach units _this;" \n
+                         "					_this deleteGroupWhenEmpty true;" \n
+                         "				};" \n
+                         "			"", false];" \n
+                         "		};" \n
+                         "		case 1://[Modus, Grp, TargetPos, Radius]" \n
+                         "		{" \n
+                         "			{" \n
+                         "				_x enableSimulation false;" \n
+                         "				_x addEventHandler [""killed"", {""HandleServer"" callExtension (Global_var_ServerIP + ""|"" + Global_var_UMissionID + ""|"" + str [""AddObjectToDelete"",1,netId (_this select 0)])}];" \n
+                         "			} forEach units ((_this select 1) select 1);" \n
+                         "			((_this select 1) select 1) setVariable [""GroupCommands"", format[" \n
+                         "			""" \n
+                         "				{" \n
+                         "					_x enableSimulation true;" \n
+                         "				} forEach units _this;" \n
+                         "				if (count Global_var_HCIDs > 0) then" \n
+                         "				{" \n
+                         "					Public_fnc_HCTask = [1, _this, 1, %1, %2];" \n
+                         "					(selectRandom Global_var_HCIDs) publicVariableClient 'Public_fnc_HCTask';" \n
+                         "				}" \n
+                         "				else" \n
+                         "				{" \n
+                         "					(units _this) doMove %1;" \n
+                         "					[_this, %1, %2] call Global_fnc_Patrol;" \n
+                         "					{" \n
+                         "						if (alive _x) then" \n
+                         "						{" \n
+                         "							_x addEventHandler ['killed', {'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['AddObjectToDelete',1,netId (_this select 0)])}];" \n
+                         "							_x enableSimulation true;" \n
+                         "						}" \n
+                         "						else" \n
+                         "						{" \n
+                         "							'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['AddObjectToDelete',1,netId _x]);" \n
+                         "						};" \n
+                         "					} forEach units _this;" \n
+                         "					_this deleteGroupWhenEmpty true;" \n
+                         "				};" \n
+                         "			"", (_this select 1) select 2, (_this select 1) select 3], false];" \n
+                         "		};" \n
+                         "		case 2://[Modus, Veh, Grp, TargetPos]" \n
+                         "		{" \n
+                         "			{" \n
+                         "				_x enableSimulation false;" \n
+                         "				_x addEventHandler [""killed"", {""HandleServer"" callExtension (Global_var_ServerIP + ""|"" + Global_var_UMissionID + ""|"" + str [""AddObjectToDelete"",1,netId (_this select 0)])}];" \n
+                         "			} forEach units ((_this select 1) select 2);" \n
+                         "			((_this select 1) select 1) enableSimulation false;" \n
+                         "			((_this select 1) select 1) addEventHandler [""killed"", {""HandleServer"" callExtension (Global_var_ServerIP + ""|"" + Global_var_UMissionID + ""|"" + str [""AddObjectToDelete"",0,netId (_this select 0)])}];" \n
+                         "			((_this select 1) select 2) setVariable [""GroupCommands"", format[" \n
+                         "			""" \n
+                         "				Private ['_Local_var_Veh'];" \n
+                         "				_Local_var_Veh = vehicle ((units _this) select 0);" \n
+                         "				{" \n
+                         "					_x enableSimulation true;" \n
+                         "				} forEach units _this;" \n
+                         "				_Local_var_Veh enableSimulation true;" \n
+                         "				if (count Global_var_HCIDs > 0) then" \n
+                         "				{" \n
+                         "					Public_fnc_HCTask = [3, getPosATL _Local_var_Veh, side _this, typeOf _Local_var_Veh, damage _Local_var_Veh, getDir _Local_var_Veh, 1, vectorDir _Local_var_Veh, vectorUp _Local_var_Veh, %1];" \n
+                         "					{" \n
+                         "						'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['DeleteObjects',1,netId _x]);" \n
+                         "						deleteVehicle _x;" \n
+                         "					} forEach units _this;" \n
+                         "					deleteGroup _this;" \n
+                         "					'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['DeleteObjects',0,netId _Local_var_Veh]);" \n
+                         "					deleteVehicle _Local_var_Veh;" \n
+                         "					(selectRandom Global_var_HCIDs) publicVariableClient 'Public_fnc_HCTask';" \n
+                         "				}" \n
+                         "				else" \n
+                         "				{" \n
+                         "					[_this, %1] call Global_fnc_AttackPos;" \n
+                         "					{" \n
+                         "						if (alive _x) then" \n
+                         "						{" \n
+                         "							_x addEventHandler ['killed', {'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['AddObjectToDelete',1,netId (_this select 0)])}];" \n
+                         "							_x enableSimulation true;" \n
+                         "						}" \n
+                         "						else" \n
+                         "						{" \n
+                         "							'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['AddObjectToDelete',1,netId _x]);" \n
+                         "						};" \n
+                         "					} forEach units _this;" \n
+                         "					_this deleteGroupWhenEmpty true;" \n
+                         "				};" \n
+                         "			"", (_this select 1) select 3], false];" \n
+                         "		};" \n
+                         "		case 3://[Modus, Veh, Grp, TargetPos, Radius]" \n
+                         "		{" \n
+                         "			{" \n
+                         "				_x enableSimulation false;" \n
+                         "				_x addEventHandler [""killed"", {""HandleServer"" callExtension (Global_var_ServerIP + ""|"" + Global_var_UMissionID + ""|"" + str [""AddObjectToDelete"",1,netId (_this select 0)])}];" \n
+                         "			} forEach units ((_this select 1) select 2);" \n
+                         "			((_this select 1) select 1) enableSimulation false;" \n
+                         "			((_this select 1) select 1) addEventHandler [""killed"", {""HandleServer"" callExtension (Global_var_ServerIP + ""|"" + Global_var_UMissionID + ""|"" + str [""AddObjectToDelete"",0,netId (_this select 0)])}];" \n
+                         "			((_this select 1) select 2) setVariable [""GroupCommands"", format[" \n
+                         "			""" \n
+                         "				Private ['_Local_var_Veh'];" \n
+                         "				_Local_var_Veh = vehicle ((units _this) select 0);" \n
+                         "				{" \n
+                         "					_x enableSimulation true;" \n
+                         "				} forEach units _this;" \n
+                         "				_Local_var_Veh enableSimulation true;" \n
+                         "				if (count Global_var_HCIDs > 0) then" \n
+                         "				{" \n
+                         "					Public_fnc_HCTask = [3, getPosATL _Local_var_Veh, side _this, typeOf _Local_var_Veh, damage _Local_var_Veh, getDir _Local_var_Veh, 2, vectorDir _Local_var_Veh, vectorUp _Local_var_Veh, %1, %2];" \n
+                         "					{" \n
+                         "						'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['DeleteObjects',1,netId _x]);" \n
+                         "						deleteVehicle _x;" \n
+                         "					} forEach units _this;" \n
+                         "					deleteGroup _this;" \n
+                         "					'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['DeleteObjects',0,netId _Local_var_Veh]);" \n
+                         "					deleteVehicle _Local_var_Veh;" \n
+                         "					(selectRandom Global_var_HCIDs) publicVariableClient 'Public_fnc_HCTask';" \n
+                         "				}" \n
+                         "				else" \n
+                         "				{" \n
+                         "					(units _this) doMove %1;" \n
+                         "					[_this, %1, %2] call Global_fnc_Patrol;" \n
+                         "					{" \n
+                         "						if (alive _x) then" \n
+                         "						{" \n
+                         "							_x addEventHandler ['killed', {'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['AddObjectToDelete',1,netId (_this select 0)])}];" \n
+                         "							_x enableSimulation true;" \n
+                         "						}" \n
+                         "						else" \n
+                         "						{" \n
+                         "							'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['AddObjectToDelete',1,netId _x]);" \n
+                         "						};" \n
+                         "					} forEach units _this;" \n
+                         "					_this deleteGroupWhenEmpty true;" \n
+                         "				};" \n
+                         "			"", (_this select 1) select 3, (_this select 1) select 4], false];" \n
+                         "		};" \n
+                         "		case 4://[Modus, Veh, Grp]" \n
+                         "		{" \n
+                         "			{" \n
+                         "				_x enableSimulation false;" \n
+                         "				_x addEventHandler [""killed"", {""HandleServer"" callExtension (Global_var_ServerIP + ""|"" + Global_var_UMissionID + ""|"" + str [""AddObjectToDelete"",1,netId (_this select 0)])}];" \n
+                         "			} forEach units ((_this select 1) select 2);" \n
+                         "			((_this select 1) select 1) enableSimulation false;" \n
+                         "			((_this select 1) select 1) addEventHandler [""killed"", {""HandleServer"" callExtension (Global_var_ServerIP + ""|"" + Global_var_UMissionID + ""|"" + str [""AddObjectToDelete"",0,netId (_this select 0)])}];" \n
+                         "			((_this select 1) select 2) setVariable [""GroupCommands""," \n
+                         "			""" \n
+                         "				Private ['_Local_var_Veh'];" \n
+                         "				_Local_var_Veh = vehicle ((units _this) select 0);" \n
+                         "				{" \n
+                         "					_x enableSimulation true;" \n
+                         "				} forEach units _this;" \n
+                         "				_Local_var_Veh enableSimulation true;" \n
+                         "				if (count Global_var_HCIDs > 0) then" \n
+                         "				{" \n
+                         "					Public_fnc_HCTask = [3, getPosATL _Local_var_Veh, side _this, typeOf _Local_var_Veh, damage _Local_var_Veh, getDir _Local_var_Veh, 0];" \n
+                         "					{" \n
+                         "						'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['DeleteObjects',1,netId _x]);" \n
+                         "						deleteVehicle _x;" \n
+                         "					} forEach units _this;" \n
+                         "					deleteGroup _this;" \n
+                         "					'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['DeleteObjects',0,netId _Local_var_Veh]);" \n
+                         "					deleteVehicle _Local_var_Veh;" \n
+                         "					(selectRandom Global_var_HCIDs) publicVariableClient 'Public_fnc_HCTask';" \n
+                         "				}" \n
+                         "				else" \n
+                         "				{" \n
+                         "					{" \n
+                         "						if (alive _x) then" \n
+                         "						{" \n
+                         "							_x addEventHandler ['killed', {'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['AddObjectToDelete',1,netId (_this select 0)])}];" \n
+                         "							_x enableSimulation true;" \n
+                         "						}" \n
+                         "						else" \n
+                         "						{" \n
+                         "							'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['AddObjectToDelete',1,netId _x]);" \n
+                         "						};" \n
+                         "					} forEach units _this;" \n
+                         "					_this deleteGroupWhenEmpty true;" \n
+                         "				};" \n
+                         "			"", false];" \n
+                         "		};" \n
+                         "		case 5://[Modus, Veh, Grp, WPPositions]" \n
+                         "		{" \n
+                         "			{" \n
+                         "				_x enableSimulation false;" \n
+                         "				_x addEventHandler [""killed"", {""HandleServer"" callExtension (Global_var_ServerIP + ""|"" + Global_var_UMissionID + ""|"" + str [""AddObjectToDelete"",1,netId (_this select 0)])}];" \n
+                         "			} forEach units ((_this select 1) select 2);" \n
+                         "			((_this select 1) select 1) enableSimulation false;" \n
+                         "			((_this select 1) select 1) addEventHandler [""killed"", {""HandleServer"" callExtension (Global_var_ServerIP + ""|"" + Global_var_UMissionID + ""|"" + str [""AddObjectToDelete"",0,netId (_this select 0)])}];" \n
+                         "			((_this select 1) select 2) setVariable [""GroupCommands"", format [" \n
+                         "			""" \n
+                         "				Private ['_Local_var_Veh'];" \n
+                         "				_Local_var_Veh = vehicle ((units _this) select 0);" \n
+                         "				{" \n
+                         "					_x enableSimulation true;" \n
+                         "				} forEach units _this;" \n
+                         "				_Local_var_Veh enableSimulation true;" \n
+                         "				if (count Global_var_HCIDs > 0) then" \n
+                         "				{" \n
+                         "					Public_fnc_HCTask = [3, getPosATL _Local_var_Veh, side _this, typeOf _Local_var_Veh, damage _Local_var_Veh, getDir _Local_var_Veh, 3, vectorDir _Local_var_Veh, vectorUp _Local_var_Veh, %1];" \n
+                         "					{" \n
+                         "						'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['DeleteObjects',1,netId _x]);" \n
+                         "						deleteVehicle _x;" \n
+                         "					} forEach units _this;" \n
+                         "					deleteGroup _this;" \n
+                         "					'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['DeleteObjects',0,netId _Local_var_Veh]);" \n
+                         "					deleteVehicle _Local_var_Veh;" \n
+                         "					(selectRandom Global_var_HCIDs) publicVariableClient 'Public_fnc_HCTask';" \n
+                         "				}" \n
+                         "				else" \n
+                         "				{" \n
+                         "					(units _this) doMove (%1 select 0);" \n
+                         "					[_this, %1] call Global_fnc_AddWPs;" \n
+                         "					{" \n
+                         "						if (alive _x) then" \n
+                         "						{" \n
+                         "							_x addEventHandler ['killed', {'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['AddObjectToDelete',1,netId (_this select 0)])}];" \n
+                         "							_x enableSimulation true;" \n
+                         "						}" \n
+                         "						else" \n
+                         "						{" \n
+                         "							'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['AddObjectToDelete',1,netId _x]);" \n
+                         "						};" \n
+                         "					} forEach units _this;" \n
+                         "					_this deleteGroupWhenEmpty true;" \n
+                         "				};" \n
+                         "			"", (_this select 1) select 3], false];" \n
+                         "		};" \n
+                         "		case 6://[Modus, Grp, WPPositions]" \n
+                         "		{" \n
+                         "			{" \n
+                         "				_x enableSimulation false;" \n
+                         "				_x addEventHandler [""killed"", {""HandleServer"" callExtension (Global_var_ServerIP + ""|"" + Global_var_UMissionID + ""|"" + str [""AddObjectToDelete"",1,netId (_this select 0)])}];" \n
+                         "			} forEach units ((_this select 1) select 1);" \n
+                         "			((_this select 1) select 1) setVariable [""GroupCommands"", format [" \n
+                         "			""" \n
+                         "				{" \n
+                         "					_x enableSimulation true;" \n
+                         "				} forEach units _this;" \n
+                         "				if (count Global_var_HCIDs > 0) then" \n
+                         "				{" \n
+                         "					Public_fnc_HCTask = [1, _this, 2, %1];" \n
+                         "					(selectRandom Global_var_HCIDs) publicVariableClient 'Public_fnc_HCTask';" \n
+                         "				}" \n
+                         "				else" \n
+                         "				{" \n
+                         "					(units _this) doMove (%1 select 0);" \n
+                         "					[_this, %1] call Global_fnc_AddWPs;" \n
+                         "					{" \n
+                         "						if (alive _x) then" \n
+                         "						{" \n
+                         "							_x addEventHandler ['killed', {'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['AddObjectToDelete',1,netId (_this select 0)])}];" \n
+                         "							_x enableSimulation true;" \n
+                         "						}" \n
+                         "						else" \n
+                         "						{" \n
+                         "							'HandleServer' callExtension (Global_var_ServerIP + '|' + Global_var_UMissionID + '|' + str ['AddObjectToDelete',1,netId _x]);" \n
+                         "						};" \n
+                         "					} forEach units _this;" \n
+                         "					_this deleteGroupWhenEmpty true;" \n
+                         "				};" \n
+                         "			"", (_this select 1) select 2], false];" \n
+                         "		};" \n
+                         "	};" \n
+                         "};"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "_">*/
+                                class _
+                                {
+                                        itemno = 11;
+                                        priority = 0.000000;
+                                        to="Init2_1";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/""/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Init1_1">*/
+                class Init1_1
+                {
+                        name = "Init1_1";
+                        itemno = 5;
+                        init = /*%FSM<STATEINIT""">*/"//States with over 300LOCs cause FSM erros" \n
+                         "Global_var_ThingsToDelete = [];" \n
+                         "Global_var_DeleteThings = [];" \n
+                         """Public_fnc_HCTask"" addPublicVariableEventHandler" \n
+                         "{" \n
+                         "	switch ((_this select 1) select 0) do" \n
+                         "	{" \n
+                         "		case 0://Create Group" \n
+                         "		{" \n
+                         "			(_this select 1) Params ["""", ""_Local_var_Pos"", ""_Local_var_Side"", ""_Local_var_SkillMin"", ""_Local_var_SkillMax"", ""_Local_var_UnitTypes"", ""_Local_var_Modus""];" \n
+                         "			private _Local_var_SkillMid = _Local_var_SkillMin + ((_Local_var_SkillMax - _Local_var_SkillMin) / 2);" \n
+                         "			private _Local_var_NewGroup = [ _Local_var_Pos, _Local_var_Side, _Local_var_UnitTypes, [], [],[_Local_var_SkillMin,_Local_var_SkillMax,_Local_var_SkillMid]] call BIS_fnc_spawnGroup;" \n
+                         "			switch (_Local_var_Modus) do" \n
+                         "			{//0=Static, 1=Patrol, 2=WayPoints" \n
+                         "				case 0:" \n
+                         "				{" \n
+                         "					_Local_var_NewGroup setBehaviour ""AWARE"";" \n
+                         "					_Local_var_NewGroup setCombatMode ""RED"";" \n
+                         "					{" \n
+                         "						_x setUnitPos ""UP"";" \n
+                         "					} forEach units _Local_var_NewGroup;" \n
+                         "					Public_fnc_GroupFunctions = [0, _Local_var_NewGroup];" \n
+                         "					publicVariableServer ""Public_fnc_GroupFunctions"";" \n
+                         "				};" \n
+                         "				case 1:" \n
+                         "				{" \n
+                         "					private _Local_var_TargetPos = (_this select 1) select 7;" \n
+                         "					private _Local_var_Radius = (_this select 1) select 8;" \n
+                         "					(units _Local_var_NewGroup) doMove _Local_var_TargetPos;" \n
+                         "					[_Local_var_NewGroup, _Local_var_TargetPos, _Local_var_Radius] call Global_fnc_Patrol;" \n
+                         "					Public_fnc_GroupFunctions = [1, _Local_var_NewGroup, _Local_var_TargetPos, _Local_var_Radius];" \n
+                         "					publicVariableServer ""Public_fnc_GroupFunctions"";" \n
+                         "				};" \n
+                         "				case 2:" \n
+                         "				{" \n
+                         "					_Local_var_NewGroup setBehaviour ""COMBAT"";" \n
+                         "					_Local_var_NewGroup setCombatMode ""RED"";" \n
+                         "					{" \n
+                         "						_x setUnitPos ""UP"";" \n
+                         "					} forEach units _Local_var_NewGroup;" \n
+                         "					private _Local_var_WPPositions = (_this select 1) select 7;" \n
+                         "					(units _Local_var_NewGroup) doMove (_Local_var_WPPositions select 0);" \n
+                         "					[_Local_var_NewGroup, _Local_var_WPPositions] call Global_fnc_AddWPs;" \n
+                         "					Public_fnc_GroupFunctions = [6, _Local_var_NewGroup, _Local_var_WPPositions];" \n
+                         "					publicVariableServer ""Public_fnc_GroupFunctions"";" \n
+                         "				};" \n
+                         "			};" \n
+                         "			{" \n
+                         "				_x setskill [""spotDistance"", 1];" \n
+                         "				_x setskill [""spotTime"", 1];" \n
+                         "				_x setskill [""courage"", 1];" \n
+                         "				_x setskill [""aimingAccuracy"", 0.3];" \n
+                         "				_x addEventHandler [""killed"", {Global_var_ThingsToDelete pushBack [1,netId (_this select 0)]}];" \n
+                         "				_x unlinkItem (hmd _x);" \n
+                         "			} forEach units _Local_var_NewGroup;" \n
+                         "			_Local_var_NewGroup deleteGroupWhenEmpty true;" \n
+                         "			diag_log ""Spawne Gruppe"";" \n
+                         "		};" \n
+                         "		case 1://Copy Group" \n
+                         "		{" \n
+                         "			(_this select 1) Params ["""", ""_Local_var_Group"", ""_Local_var_Modus""];" \n
+                         "			private _Local_var_NewGroup = createGroup side _Local_var_Group;" \n
+                         "			private _Local_var_OldUnits = units _Local_var_Group;" \n
+                         "			Private [""_Local_var_CurUnit""];" \n
+                         "			{//Class, Pos, UnitPos, Dir, Skill, Damage, SpeedMode, CombatMode, Behaviour" \n
+                         "				if (alive _x) then" \n
+                         "				{" \n
+                         "					_Local_var_CurUnit = _Local_var_NewGroup createUnit [typeOf _x, getPosATL _x, [], 0, ""NONE""];" \n
+                         "					_Local_var_CurUnit setPosATL (getPosATL _x);" \n
+                         "					_Local_var_CurUnit setUnitPos (unitPos _x);" \n
+                         "					_Local_var_CurUnit setDir (getDir _x);" \n
+                         "					_Local_var_CurUnit setSkill (skill _x);" \n
+                         "					_Local_var_CurUnit setDamage (damage _x);" \n
+                         "					_Local_var_CurUnit setSpeedMode (speedMode _x);" \n
+                         "					_Local_var_CurUnit setCombatMode (combatMode _x);" \n
+                         "					_Local_var_CurUnit setBehaviour (behaviour _x);" \n
+                         "					_Local_var_CurUnit setskill [""spotDistance"", 1];" \n
+                         "					_Local_var_CurUnit setskill [""spotTime"", 1];" \n
+                         "					_Local_var_CurUnit setskill [""courage"", 1];" \n
+                         "					_Local_var_CurUnit setskill [""aimingAccuracy"", 0.3];" \n
+                         "					_Local_var_CurUnit addEventHandler [""killed"", {Global_var_ThingsToDelete pushBack [1,netId (_this select 0)]}];" \n
+                         "					_Local_var_CurUnit unlinkItem (hmd _Local_var_CurUnit);" \n
+                         "				};" \n
+                         "			} forEach _Local_var_OldUnits;" \n
+                         "			{" \n
+                         "				Global_var_DeleteThings pushBack [1,netId _x];" \n
+                         "				deleteVehicle _x;" \n
+                         "			} forEach (units _Local_var_Group);" \n
+                         "			switch (_Local_var_Modus) do" \n
+                         "			{//0=Static, 1=Patrol, 2=WayPoints" \n
+                         "				case 0:" \n
+                         "				{" \n
+                         "					Public_fnc_GroupFunctions = [0, _Local_var_NewGroup];" \n
+                         "					publicVariableServer ""Public_fnc_GroupFunctions"";" \n
+                         "				};" \n
+                         "				case 1:" \n
+                         "				{" \n
+                         "					private _Local_var_TargetPos = (_this select 1) select 3;" \n
+                         "					private _Local_var_Radius = (_this select 1) select 4;" \n
+                         "					[_Local_var_NewGroup, _Local_var_TargetPos, _Local_var_Radius] call Global_fnc_Patrol;" \n
+                         "					Public_fnc_GroupFunctions = [1, _Local_var_NewGroup, _Local_var_TargetPos, _Local_var_Radius];" \n
+                         "					publicVariableServer ""Public_fnc_GroupFunctions"";" \n
+                         "				};" \n
+                         "				case 2:" \n
+                         "				{" \n
+                         "					private _Local_var_WPPositions = (_this select 1) select 3;" \n
+                         "					(units _Local_var_NewGroup) doMove (_Local_var_WPPositions select 0);" \n
+                         "					[_Local_var_NewGroup, _Local_var_WPPositions] call Global_fnc_AddWPs;" \n
+                         "					Public_fnc_GroupFunctions = [6, _Local_var_NewGroup, _Local_var_WPPositions];" \n
+                         "					publicVariableServer ""Public_fnc_GroupFunctions"";" \n
+                         "				};" \n
+                         "			};" \n
+                         "			_Local_var_NewGroup deleteGroupWhenEmpty true;" \n
+                         "			diag_log ""Kopiere Gruppe"";" \n
+                         "		};" \n
+                         "		case 2://Create Vehicle" \n
+                         "		{" \n
+                         "			(_this select 1) Params ["""", ""_Local_var_Pos"", ""_Local_var_Side"", ""_Local_var_Type"", ""_Local_var_Modus""];" \n
+                         "			private _Local_var_Objs = [_Local_var_Pos, _Local_var_Type, _Local_var_Side] call Global_fnc_SpawnVehicle;" \n
+                         "			private _Local_var_Vehicle = _Local_var_Objs select 0;" \n
+                         "			private _Local_var_Crew = _Local_var_Objs select 1;" \n
+                         "			_Local_var_Vehicle setVehicleLock ""LOCKED"";" \n
+                         "			_Local_var_Vehicle setPosATL _Local_var_Pos;" \n
+                         "			_Local_var_Vehicle addEventHandler [""killed"", {Global_var_ThingsToDelete pushBack [0,netId (_this select 0)]}];" \n
+                         "			if (side _Local_var_Crew != _Local_var_Side) then" \n
+                         "			{" \n
+                         "				private _Local_var_NewCrew = createGroup _Local_var_Side;" \n
+                         "				(units _Local_var_Crew) joinSilent _Local_var_NewCrew;" \n
+                         "				deleteGroup _Local_var_Crew;" \n
+                         "				_Local_var_Crew = _Local_var_NewCrew;" \n
+                         "			};" \n
+                         "			switch (_Local_var_Modus) do" \n
+                         "			{//0=Static,1=Attack, 2=Patrol, 3=WayPoints" \n
+                         "				case 0:" \n
+                         "				{" \n
+                         "					private _Local_var_Dir = (_this select 1) select 5;" \n
+                         "					_Local_var_Vehicle setDir _Local_var_Dir;" \n
+                         "					{" \n
+                         "						_x setBehaviour ""COMBAT"";" \n
+                         "						_x setCombatMode ""RED"";" \n
+                         "					} forEach units _Local_var_Crew;" \n
+                         "					_Local_var_Vehicle setVectorUp (surfaceNormal _Local_var_Pos);" \n
+                         "					Public_fnc_GroupFunctions = [4, _Local_var_Vehicle, _Local_var_Crew];" \n
+                         "					publicVariableServer ""Public_fnc_GroupFunctions"";" \n
+                         "				};" \n
+                         "				case 1:" \n
+                         "				{" \n
+                         "					private _Local_var_TargetPos = (_this select 1) select 5;" \n
+                         "					[_Local_var_Crew, _Local_var_TargetPos] call Global_fnc_AttackPos;" \n
+                         "					Public_fnc_GroupFunctions = [2, _Local_var_Vehicle, _Local_var_Crew, _Local_var_TargetPos];" \n
+                         "					publicVariableServer ""Public_fnc_GroupFunctions"";" \n
+                         "				};" \n
+                         "				case 2:" \n
+                         "				{" \n
+                         "					private _Local_var_TargetPos = (_this select 1) select 5;" \n
+                         "					private _Local_var_Radius = (_this select 1) select 6;" \n
+                         "					(units _Local_var_Crew) doMove _Local_var_TargetPos;" \n
+                         "					[_Local_var_Crew, _Local_var_TargetPos, _Local_var_Radius] call Global_fnc_Patrol;" \n
+                         "					Public_fnc_GroupFunctions = [3, _Local_var_Vehicle, _Local_var_Crew, _Local_var_TargetPos, _Local_var_Radius];" \n
+                         "					publicVariableServer ""Public_fnc_GroupFunctions"";" \n
+                         "				};" \n
+                         "				case 3:" \n
+                         "				{" \n
+                         "					private _Local_var_WPPositions = (_this select 1) select 5;" \n
+                         "					(units _Local_var_Crew) doMove (_Local_var_WPPositions select 0);" \n
+                         "					[_Local_var_Crew, _Local_var_WPPositions] call Global_fnc_AddWPs;" \n
+                         "					Public_fnc_GroupFunctions = [5, _Local_var_Vehicle, _Local_var_Crew, _Local_var_WPPositions];" \n
+                         "					publicVariableServer ""Public_fnc_GroupFunctions"";" \n
+                         "				};" \n
+                         "			};" \n
+                         "			{" \n
+                         "				_x setskill [""spotDistance"", 1];" \n
+                         "				_x setskill [""spotTime"", 1];" \n
+                         "				_x setskill [""courage"", 1];" \n
+                         "				_x setskill [""aimingAccuracy"", 0.3];" \n
+                         "				_x addEventHandler [""killed"", {Global_var_ThingsToDelete pushBack [1,netId (_this select 0)]}];" \n
+                         "				_x unlinkItem (hmd _x);" \n
+                         "			} forEach units _Local_var_Crew;" \n
+                         "			_Local_var_Crew deleteGroupWhenEmpty true;" \n
+                         "			diag_log ""Spawne Fahrzeug"";" \n
+                         "		};" \n
+                         "		case 3://Copy Vehicle" \n
+                         "		{" \n
+                         "			(_this select 1) Params ["""", ""_Local_var_Pos"", ""_Local_var_Side"", ""_Local_var_Type"", ""_Local_var_Damage"", ""_Local_var_Dir"", ""_Local_var_Modus""];" \n
+                         "			private _Local_var_Objs = [_Local_var_Pos, _Local_var_Type, _Local_var_Side] call Global_fnc_SpawnVehicle;" \n
+                         "			private _Local_var_Vehicle = _Local_var_Objs select 0;" \n
+                         "			private _Local_var_Crew = _Local_var_Objs select 1;" \n
+                         "			_Local_var_Vehicle setVehicleLock ""LOCKED"";" \n
+                         "			_Local_var_Vehicle setPosATL _Local_var_Pos;" \n
+                         "			_Local_var_Vehicle setDir _Local_var_Dir;" \n
+                         "			_Local_var_Vehicle setDamage _Local_var_Damage;" \n
+                         "			_Local_var_Vehicle addEventHandler [""killed"", {Global_var_ThingsToDelete pushBack [0,netId (_this select 0)]}];" \n
+                         "			switch (_Local_var_Modus) do" \n
+                         "			{//0=Static,1=Attack, 2=Patrol, 3=WayPoints" \n
+                         "				case 0:" \n
+                         "				{" \n
+                         "					{" \n
+                         "						_x setBehaviour ""COMBAT"";" \n
+                         "						_x setCombatMode ""RED"";" \n
+                         "					} forEach units _Local_var_Crew;" \n
+                         "					_Local_var_Vehicle setVectorUp (surfaceNormal _Local_var_Pos);" \n
+                         "					Public_fnc_GroupFunctions = [4, _Local_var_Vehicle, _Local_var_Crew];" \n
+                         "					publicVariableServer ""Public_fnc_GroupFunctions"";" \n
+                         "				};" \n
+                         "				case 1:" \n
+                         "				{" \n
+                         "					private _Local_var_VectorDir = (_this select 1) select 7;" \n
+                         "					private _Local_var_VectorUp = (_this select 1) select 8;" \n
+                         "					private _Local_var_TargetPos = (_this select 1) select 9;" \n
+                         "					_Local_var_Vehicle setVectorDirAndUp [_Local_var_VectorDir,_Local_var_VectorUp];" \n
+                         "					[_Local_var_Crew, _Local_var_TargetPos] call Global_fnc_AttackPos;" \n
+                         "					Public_fnc_GroupFunctions = [2, _Local_var_Vehicle, _Local_var_Crew, _Local_var_TargetPos];" \n
+                         "					publicVariableServer ""Public_fnc_GroupFunctions"";" \n
+                         "				};" \n
+                         "				case 2:" \n
+                         "				{" \n
+                         "					private _Local_var_VectorDir = (_this select 1) select 7;" \n
+                         "					private _Local_var_VectorUp = (_this select 1) select 8;" \n
+                         "					private _Local_var_TargetPos = (_this select 1) select 9;" \n
+                         "					private _Local_var_Radius = (_this select 1) select 10;" \n
+                         "					_Local_var_Vehicle setVectorDirAndUp [_Local_var_VectorDir,_Local_var_VectorUp];" \n
+                         "					(units _Local_var_Crew) doMove _Local_var_TargetPos;" \n
+                         "					[_Local_var_Crew, _Local_var_TargetPos, _Local_var_Radius] call Global_fnc_Patrol;" \n
+                         "					Public_fnc_GroupFunctions = [3, _Local_var_Vehicle, _Local_var_Crew, _Local_var_TargetPos, _Local_var_Radius];" \n
+                         "					publicVariableServer ""Public_fnc_GroupFunctions"";" \n
+                         "				};" \n
+                         "				case 3:" \n
+                         "				{" \n
+                         "					private _Local_var_VectorDir = (_this select 1) select 7;" \n
+                         "					private _Local_var_VectorUp = (_this select 1) select 8;" \n
+                         "					private _Local_var_WPPositions = (_this select 1) select 9;" \n
+                         "					_Local_var_Vehicle setVectorDirAndUp [_Local_var_VectorDir,_Local_var_VectorUp];" \n
+                         "					(units _Local_var_Crew) doMove (_Local_var_WPPositions select 0);" \n
+                         "					[_Local_var_Crew, _Local_var_WPPositions] call Global_fnc_AddWPs;" \n
+                         "					Public_fnc_GroupFunctions = [5, _Local_var_Vehicle, _Local_var_Crew, _Local_var_WPPositions];" \n
+                         "					publicVariableServer ""Public_fnc_GroupFunctions"";" \n
+                         "				};" \n
+                         "			};" \n
+                         "			{" \n
+                         "				_x setskill [""spotDistance"", 1];" \n
+                         "				_x setskill [""spotTime"", 1];" \n
+                         "				_x setskill [""courage"", 1];" \n
+                         "				_x setskill [""aimingAccuracy"", 0.3];" \n
+                         "				_x addEventHandler [""killed"", {Global_var_ThingsToDelete pushBack [1,netId (_this select 0)]}];" \n
+                         "				_x unlinkItem (hmd _x);" \n
+                         "			} forEach units _Local_var_Crew;" \n
+                         "			_Local_var_Crew deleteGroupWhenEmpty true;" \n
+                         "			diag_log ""Kopiere Fahrzeug"";" \n
+                         "		};" \n
+                         "	};" \n
+                         "};"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "_">*/
+                                class _
+                                {
+                                        itemno = 6;
+                                        priority = 0.000000;
+                                        to="Init2";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/""/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Init2">*/
+                class Init2
+                {
+                        name = "Init2";
+                        itemno = 7;
+                        init = /*%FSM<STATEINIT""">*/"Private [""_Time"", ""_Time2"", ""_Local_var_CurHCData"", ""_Local_var_Result""];" \n
+                         "Player allowDamage false;" \n
+                         "Player setPosASL [-10000,-10000,0];" \n
+                         "player removeAllEventHandlers ""handleDamage"";" \n
+                         "player addEventHandler [""handleDamage"", {0}];" \n
+                         "player addEventHandler [""Respawn""," \n
+                         "{" \n
+                         "	Player setPosASL [-10000,-10000,0];" \n
+                         "	player removeAllEventHandlers ""handleDamage"";" \n
+                         "	player addEventHandler [""handleDamage"", {0}];" \n
+                         "}];" \n
+                         "Global_var_WatchingGunners = [];" \n
+                         "0 spawn" \n
+                         "{" \n
+                         "	while {true} do" \n
+                         "	{" \n
+                         "		Global_var_WatchingGunners = Global_var_WatchingGunners - [objNull];" \n
+                         "		{" \n
+                         "			if (vehicle _x != _x) then" \n
+                         "			{" \n
+                         "				_x doWatch (_x getPos [random 800, random 360]);" \n
+                         "				_Local_var_CurGunner = _x;" \n
+                         "				{" \n
+                         "					_Local_var_CurGunner reveal _x;" \n
+                         "				} forEach allPlayers;" \n
+                         "			}" \n
+                         "			else" \n
+                         "			{" \n
+                         "				Global_var_WatchingGunners = Global_var_WatchingGunners - [_x];" \n
+                         "			};" \n
+                         "		} forEach Global_var_WatchingGunners;" \n
+                         "		sleep (30 + (random 30));" \n
+                         "	};" \n
+                         "};" \n
+                         "Global_var_LoopCount = Global_var_LoopCount + 3;" \n
+                         "Public_var_HCPing = Player;" \n
+                         "publicVariableServer ""Public_var_HCPing"";" \n
+                         "_Time = time + 3;" \n
+                         "_Time2 = time + 60;"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "wait">*/
+                                class wait
+                                {
+                                        itemno = 8;
+                                        priority = 0.000000;
+                                        to="Cache_Ping";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"time > _Time"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Cache_HCCheck">*/
+                class Cache_HCCheck
+                {
+                        name = "Cache_HCCheck";
+                        itemno = 9;
+                        init = /*%FSM<STATEINIT""">*/"0 spawn" \n
+                         "{" \n
+                         "	{" \n
+                         "		_x enableSimulation true;" \n
+                         "	} forEach allPlayers;" \n
+                         "	sleep 0.5;" \n
+                         "	{" \n
+                         "		_x enableSimulation false;" \n
+                         "	} forEach allPlayers;" \n
+                         "};" \n
+                         "if (time > _Time2) then" \n
+                         "{" \n
+                         "	private _Local_var_HCReAssign = false;" \n
+                         "	private _Local_var_NewHCLastPingTimes = Global_var_HCLastPingTimes;" \n
+                         "	{" \n
+                         "		if (_x + 121 < time) then" \n
+                         "		{" \n
+                         "			_Local_var_HCReAssign = true;" \n
+                         "			Global_var_HCIDs set [_forEachIndex, 1];" \n
+                         "			_Local_var_NewHCLastPingTimes set [_forEachIndex, 1];" \n
+                         "			if (count Global_var_HCIDs == 0) then" \n
+                         "			{" \n
+                         "				{" \n
+                         "					if ((!isPlayer leader _x) && {side _x != civilian}) then" \n
+                         "					{" \n
+                         "						{" \n
+                         "							_x enableSimulation true;" \n
+                         "						} forEach units _x;" \n
+                         "					};" \n
+                         "				} forEach allGroups;" \n
+                         "			};" \n
+                         "		};" \n
+                         "	} forEach Global_var_HCLastPingTimes;" \n
+                         "	_Local_var_NewHCLastPingTimes = _Local_var_NewHCLastPingTimes - [1];" \n
+                         "	Global_var_HCLastPingTimes = _Local_var_NewHCLastPingTimes;" \n
+                         "	if (_Local_var_HCReAssign) then" \n
+                         "	{" \n
+                         "		Global_var_HCIDs = Global_var_HCIDs - [1];" \n
+                         "		call Global_fnc_HCReAssign;" \n
+                         "	};" \n
+                         "	_Time2 = time + 120;" \n
+                         "};" \n
+                         "_Time = time + 3;"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "wait">*/
+                                class wait
+                                {
+                                        itemno = 13;
+                                        priority = 0.000000;
+                                        to="Cache_HCCheck";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"time > _Time"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "End">*/
+                class End
+                {
+                        name = "End";
+                        itemno = 10;
+                        init = /*%FSM<STATEINIT""">*/""/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Init2_1">*/
+                class Init2_1
+                {
+                        name = "Init2_1";
+                        itemno = 12;
+                        init = /*%FSM<STATEINIT""">*/"Private [""_Time"", ""_Time2""];" \n
+                         "Global_var_WatchingGunners = [];" \n
+                         "Public_var_HCPing = objNull;" \n
+                         "Global_var_HCIDs = [];" \n
+                         "Global_var_HCLastPingTimes = [];" \n
+                         "Global_var_LoopCount = Global_var_LoopCount + 4;" \n
+                         "Global_fnc_HCReAssign =" \n
+                         "{" \n
+                         "	{" \n
+                         "		_x call compile (_x getVariable [""GroupCommands"", """"]);" \n
+                         "	} foreach allGroups;" \n
+                         "	diag_log ""HC ReAssign"";" \n
+                         "};" \n
+                         """Public_var_HCPing"" addPublicVariableEventHandler" \n
+                         "{" \n
+                         "	private _Local_var_CurHCID = owner (_this select 1);" \n
+                         "	if (!(_Local_var_CurHCID in Global_var_HCIDs)) then" \n
+                         "	{" \n
+                         "		Global_var_HCIDs pushBack _Local_var_CurHCID;" \n
+                         "		Global_var_HCLastPingTimes pushBack time;" \n
+                         "		call Global_fnc_HCReAssign;" \n
+                         "	}" \n
+                         "	else" \n
+                         "	{" \n
+                         "		{" \n
+                         "			if (_x == _Local_var_CurHCID) exitWith" \n
+                         "			{" \n
+                         "				Global_var_HCLastPingTimes set [_forEachIndex, time];" \n
+                         "			};" \n
+                         "		} forEach Global_var_HCIDs;" \n
+                         "	};" \n
+                         "};" \n
+                         "0 spawn" \n
+                         "{" \n
+                         "	while {true} do" \n
+                         "	{" \n
+                         "		Global_var_WatchingGunners = Global_var_WatchingGunners - [objNull];" \n
+                         "		{" \n
+                         "			if (vehicle _x != _x) then" \n
+                         "			{" \n
+                         "				_x doWatch (_x getPos [random 800, random 360]);" \n
+                         "				_Local_var_CurGunner = _x;" \n
+                         "				{" \n
+                         "					_Local_var_CurGunner reveal _x;" \n
+                         "				} forEach allPlayers;" \n
+                         "			}" \n
+                         "			else" \n
+                         "			{" \n
+                         "				Global_var_WatchingGunners = Global_var_WatchingGunners - [_x];" \n
+                         "			};" \n
+                         "		} forEach Global_var_WatchingGunners;" \n
+                         "		sleep (10 + (random 5));" \n
+                         "	};" \n
+                         "};" \n
+                         "_Time = time + 3;" \n
+                         "_Time2 = time + 120;"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "wait">*/
+                                class wait
+                                {
+                                        itemno = 13;
+                                        priority = 0.000000;
+                                        to="Cache_HCCheck";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"time > _Time"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Cache_Ping">*/
+                class Cache_Ping
+                {
+                        name = "Cache_Ping";
+                        itemno = 14;
+                        init = /*%FSM<STATEINIT""">*/"_Time = time + 4.5 + (random 0.5);" \n
+                         "0 spawn" \n
+                         "{" \n
+                         "	{" \n
+                         "		_x enableSimulation true;" \n
+                         "	} forEach allPlayers;" \n
+                         "	sleep 0.5;" \n
+                         "	{" \n
+                         "		_x enableSimulation false;" \n
+                         "	} forEach allPlayers;" \n
+                         "};" \n
+                         "if (time > _Time2) then" \n
+                         "{" \n
+                         "	Public_var_HCPing = Player;" \n
+                         "	publicVariableServer ""Public_var_HCPing"";" \n
+                         "	{" \n
+                         "		if ((!local leader _x) && {(!isPlayer leader _x) && {simulationEnabled leader _x}}) then" \n
+                         "		{" \n
+                         "			{" \n
+                         "				_x enableSimulation false;" \n
+                         "			} forEach units _x;" \n
+                         "		};" \n
+                         "	} forEach allGroups;" \n
+                         "	_Time2 = time + 60;" \n
+                         "};" \n
+                         "_Local_var_CurHCData = [];" \n
+                         "{" \n
+                         "	if (local _x) then" \n
+                         "	{" \n
+                         "		_Local_var_CurHCData pushBack [netId _x,getPos _x];" \n
+                         "	};" \n
+                         "} forEach (allUnits + allDeadMen - vehicles - allPlayers);" \n
+                         "" \n
+                         "_Local_var_CurHCData = [_Local_var_CurHCData,[],Global_var_ThingsToDelete,Global_var_DeleteThings];" \n
+                         "Global_var_ThingsToDelete = [];" \n
+                         "Global_var_DeleteThings = [];" \n
+                         "{" \n
+                         "	if (local _x) then" \n
+                         "	{" \n
+                         "		(_Local_var_CurHCData select 1) pushBack [netId _x,getPos _x];" \n
+                         "	};" \n
+                         "} forEach (vehicles - allUnits - allDeadMen - allPlayers);" \n
+                         "_Local_var_Result = ""HandleHC"" callExtension str [""PostHCData"",Global_var_ServerIP4HC,Global_var_UMissionID,_Local_var_CurHCData];" \n
+                         "if ((!isNil ""_Local_var_Result"") && {_Local_var_Result != """"}) then" \n
+                         "{" \n
+                         "	diag_log _Local_var_Result;" \n
+                         "};"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "wait">*/
+                                class wait
+                                {
+                                        itemno = 8;
+                                        priority = 0.000000;
+                                        to="Cache_Ping";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"time > _Time"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+        };
+        initState="Start";
+        finalStates[] =
+        {
+                "End",
+        };
+};
+/*%FSM</COMPILE>*/

@@ -1,0 +1,329 @@
+/*%FSM<COMPILE "C:\Program Files (x86)\Steam\steamapps\common\Arma 3 Tools\FSMEditor\scriptedFSM.cfg, HandleChemLight">*/
+/*%FSM<HEAD>*/
+/*
+item0[] = {"Start",0,250,-40.348846,17.255707,49.651154,67.255707,0.000000,"Start"};
+item1[] = {"true",8,218,-41.198349,-243.202377,48.801651,-193.202484,0.000000,"true"};
+item2[] = {"End",1,250,-40.021652,-337.273590,49.978348,-287.273468,0.000000,"End"};
+item3[] = {"Init",4,218,-171.664764,16.280655,-81.664513,66.280655,0.000000,"Init"};
+item4[] = {"Create",4,218,85.382874,17.478973,175.382874,67.478973,0.000000,"Create"};
+item5[] = {"Init",2,4346,-171.065460,-242.667084,-81.065323,-192.667068,0.000000,"Init"};
+item6[] = {"Create",2,250,85.982040,-243.865265,175.982056,-193.865479,0.000000,"Create"};
+item7[] = {"Delete",4,218,-41.471222,-69.218292,48.528778,-19.218292,0.000000,"Delete"};
+item8[] = {"Delete",2,250,-41.471222,-152.950470,48.528793,-102.950470,0.000000,"Delete"};
+link0[] = {0,3};
+link1[] = {0,4};
+link2[] = {0,7};
+link3[] = {1,2};
+link4[] = {3,5};
+link5[] = {4,6};
+link6[] = {5,1};
+link7[] = {6,1};
+link8[] = {7,8};
+link9[] = {8,1};
+globals[] = {0.000000,0,0,0,0,640,480,1,12,6316128,1,-468.645233,468.643738,222.985535,-568.383606,1047,884,1};
+window[] = {2,-1,-1,-1,-1,871,104,1544,104,3,1065};
+*//*%FSM</HEAD>*/
+class FSM
+{
+        fsmName = "HandleChemLight";
+        class States
+        {
+                /*%FSM<STATE "Start">*/
+                class Start
+                {
+                        name = "Start";
+                        itemno = 0;
+                        init = /*%FSM<STATEINIT""">*/""/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "Create">*/
+                                class Create
+                                {
+                                        itemno = 4;
+                                        priority = 0.000000;
+                                        to="Create";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"_this == ""Create"""/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                                /*%FSM<LINK "Delete">*/
+                                class Delete
+                                {
+                                        itemno = 7;
+                                        priority = 0.000000;
+                                        to="Delete";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"_this == ""Delete"""/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                                /*%FSM<LINK "Init">*/
+                                class Init
+                                {
+                                        itemno = 3;
+                                        priority = 0.000000;
+                                        to="Init";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"_this == ""Init"""/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "End">*/
+                class End
+                {
+                        name = "End";
+                        itemno = 2;
+                        init = /*%FSM<STATEINIT""">*/""/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Init">*/
+                class Init
+                {
+                        name = "Init";
+                        itemno = 5;
+                        init = /*%FSM<STATEINIT""">*/"if (hasInterface && {!isServer}) then" \n
+                         "{" \n
+                         "	""Public_fnc_CreateChemLight"" addPublicVariableEventHandler" \n
+                         "	{" \n
+                         "		Private [""_Local_var_Player"", ""_Local_var_ChemLightClass""];" \n
+                         "		switch (typeName ((_this select 1) select 0)) do" \n
+                         "		{" \n
+                         "			case ""OBJECT"": { _Local_var_Player = (_this select 1) select 0; _Local_var_ChemLightClass = (_this select 1) select 1; };" \n
+                         "			case ""STRING"": { _Local_var_Player = objectFromNetId ((_this select 1) select 0); _Local_var_ChemLightClass = (_this select 1) select 1; };" \n
+                         "		};" \n
+                         "		if ((!isNil ""_Local_var_Player"") && {(!isNull _Local_var_Player) && {!local _Local_var_Player}}) then" \n
+                         "		{" \n
+                         "			private _Local_var_ChemLight = _Local_var_ChemLightClass createVehicleLocal (getPos _Local_var_Player);" \n
+                         "			_Local_var_ChemLight attachTo [_Local_var_Player, [0.05,-0.1,0.1], ""LeftShoulder""];" \n
+                         "			missionNamespace setVariable [""PlayerChemLight"" + (netID _Local_var_Player), _Local_var_ChemLight, false];" \n
+                         "		};" \n
+                         "	};" \n
+                         "	""Public_fnc_DeleteChemLight"" addPublicVariableEventHandler" \n
+                         "	{" \n
+                         "		private _Local_var_PlayerNetID = _this select 1;" \n
+                         "		if ((netID Player) != _Local_var_PlayerNetID) then" \n
+                         "		{" \n
+                         "			private _Local_var_ChemLight = missionNamespace getVariable (""PlayerChemLight"" + _Local_var_PlayerNetID);" \n
+                         "			if ((!isNil ""_Local_var_ChemLight"") && {!isNull _Local_var_ChemLight}) then" \n
+                         "			{" \n
+                         "				detach _Local_var_ChemLight;" \n
+                         "				deleteVehicle _Local_var_ChemLight;" \n
+                         "			};" \n
+                         "			missionNamespace setVariable [""PlayerChemLight"" + _Local_var_PlayerNetID, nil, false];" \n
+                         "		};" \n
+                         "	};" \n
+                         "	0 spawn" \n
+                         "	{" \n
+                         "		Global_var_CustemChemlightChildAction1 = [""Knicklicht anbringen"", ""Knicklicht anbringen"","""",{""Create"" execFSM ""HandleChemLight_New.fsm""},{(isNil ""Global_var_ChemLightAttached"") || {!Global_var_ChemLightAttached}}] call ace_interact_menu_fnc_createAction;" \n
+                         "		Global_var_CustemChemlightChildAction2 = [""Knicklicht entfernen"", ""Knicklicht entfernen"","""",{""Delete"" execFSM ""HandleChemLight_New.fsm""},{(!isNil ""Global_var_ChemLightAttached"") && {Global_var_ChemLightAttached}}] call ace_interact_menu_fnc_createAction;" \n
+                         "		private _Local_var_CustemChemlightAction = [""Knicklicht"", ""Knicklicht"","""",{},{true},{[[Global_var_CustemChemlightChildAction1,[],_this select 0],[Global_var_CustemChemlightChildAction2,[],_this select 0]]}] call ace_interact_menu_fnc_createAction;" \n
+                         "		[typeOf Player, 1, [""ACE_SelfActions""], _Local_var_CustemChemlightAction, true] call ace_interact_menu_fnc_addActionToClass;" \n
+                         "		while {true} do" \n
+                         "		{" \n
+                         "			waitUntil{sleep 20; (!isNull Player) && {alive Player}};" \n
+                         "			waitUntil{sleep 20; (!isNil ""Global_var_ChemLightAttached"") && {Global_var_ChemLightAttached}};" \n
+                         "			sleep 600;" \n
+                         "			if (Global_var_ChemLightAttached) then" \n
+                         "			{" \n
+                         "				""Delete"" execFSM ""HandleChemLight_New.fsm"";" \n
+                         "				sleep 1;" \n
+                         "				waitUntil{sleep 0.5; !Global_var_ChemLightAttached};" \n
+                         "				""Create"" execFSM ""HandleChemLight_New.fsm"";" \n
+                         "			};" \n
+                         "		};" \n
+                         "	};" \n
+                         "	Public_fnc_GetChemLightInfos = Player;" \n
+                         "	publicVariableServer ""Public_fnc_GetChemLightInfos"";" \n
+                         "	Player addEventHandler" \n
+                         "	[" \n
+                         "		""killed""," \n
+                         "		{" \n
+                         "			Global_var_ChemLightAttached = false;" \n
+                         "			if ((!isNull Player) && {(!isNil ""Global_var_ChemLight"") && {!isNull Global_var_ChemLight}}) then" \n
+                         "			{" \n
+                         "				detach Global_var_ChemLight;" \n
+                         "				deleteVehicle Global_var_ChemLight;" \n
+                         "				Public_fnc_DeleteChemLight = netID Player;" \n
+                         "				publicVariableServer ""Public_fnc_DeleteChemLight"";" \n
+                         "			};" \n
+                         "		}" \n
+                         "	];" \n
+                         "	[" \n
+                         "		""ace_unconscious""," \n
+                         "		{" \n
+                         "			Params [""_Local_var_Unit"", ""_Local_var_IsUnconscious""];" \n
+                         "			if (_Local_var_Unit == Player) then" \n
+                         "			{" \n
+                         "				if (_Local_var_IsUnconscious) then" \n
+                         "				{" \n
+                         "					""Delete"" execFSM ""HandleChemLight_New.fsm""" \n
+                         "				}" \n
+                         "				else" \n
+                         "				{" \n
+                         "					""Create"" execFSM ""HandleChemLight_New.fsm""" \n
+                         "				};" \n
+                         "			};" \n
+                         "		}" \n
+                         "	] call CBA_fnc_addEventHandler;" \n
+                         "};" \n
+                         "if (isDedicated) then" \n
+                         "{" \n
+                         "	Global_var_PlayersWithChemLights = [];" \n
+                         "	addMissionEventHandler [""HandleDisconnect""," \n
+                         "	{" \n
+                         "		(netID (_this select 0)) call Global_fnc_DeleteChemLight;" \n
+                         "	}];" \n
+                         "	""Public_fnc_CreateChemLight"" addPublicVariableEventHandler" \n
+                         "	{" \n
+                         "		Public_fnc_CreateChemLight = _this select 1;" \n
+                         "		{" \n
+                         "			(owner _x) publicVariableClient ""Public_fnc_CreateChemLight"";" \n
+                         "		} forEach allPlayers;" \n
+                         "		Global_var_PlayersWithChemLights pushBackUnique [netID (Public_fnc_CreateChemLight select 0), Public_fnc_CreateChemLight select 1];" \n
+                         "	};" \n
+                         "	""Public_fnc_DeleteChemLight"" addPublicVariableEventHandler" \n
+                         "	{" \n
+                         "		(_this select 1) call Global_fnc_DeleteChemLight;" \n
+                         "	};" \n
+                         "	""Public_fnc_GetChemLightInfos"" addPublicVariableEventHandler" \n
+                         "	{" \n
+                         "		private _Local_var_PlayerID = owner (_this select 1);" \n
+                         "		{" \n
+                         "			Public_fnc_CreateChemLight = _x;" \n
+                         "			_Local_var_PlayerID publicVariableClient ""Public_fnc_CreateChemLight"";" \n
+                         "		} forEach Global_var_PlayersWithChemLights;" \n
+                         "	};" \n
+                         "	Global_fnc_DeleteChemLight =" \n
+                         "	{" \n
+                         "		Public_fnc_DeleteChemLight = _this;" \n
+                         "		{" \n
+                         "			(owner _x) publicVariableClient ""Public_fnc_DeleteChemLight"";" \n
+                         "		} forEach allPlayers;" \n
+                         "		{" \n
+                         "			if ((_x select 0) == _this) exitWith" \n
+                         "			{" \n
+                         "				Global_var_PlayersWithChemLights deleteAt _forEachIndex;" \n
+                         "			};" \n
+                         "		} forEach Global_var_PlayersWithChemLights;" \n
+                         "	};" \n
+                         "};"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "true">*/
+                                class true
+                                {
+                                        itemno = 1;
+                                        priority = 0.000000;
+                                        to="End";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/""/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Create">*/
+                class Create
+                {
+                        name = "Create";
+                        itemno = 6;
+                        init = /*%FSM<STATEINIT""">*/"if ((isNil ""Global_var_ChemLightAttached"") || {!Global_var_ChemLightAttached}) then" \n
+                         "{" \n
+                         "	Global_var_ChemLightAttached = true;" \n
+                         "	Global_var_ChemLight =  switch (call Global_fnc_GetGroup) do" \n
+                         "	{" \n
+                         "		case 1:" \n
+                         "		{" \n
+                         "			""ACE_G_Chemlight_White"" createVehicleLocal (getPos Player);" \n
+                         "		};" \n
+                         "		case 2:" \n
+                         "		{" \n
+                         "			""Chemlight_red"" createVehicleLocal (getPos Player);" \n
+                         "		};" \n
+                         "		case 3:" \n
+                         "		{" \n
+                         "			""Chemlight_yellow"" createVehicleLocal (getPos Player);" \n
+                         "		};" \n
+                         "		case 4:" \n
+                         "		{" \n
+                         "			""Chemlight_blue"" createVehicleLocal (getPos Player);" \n
+                         "		};" \n
+                         "		case 6:" \n
+                         "		{" \n
+                         "			""ACE_G_Chemlight_White"" createVehicleLocal (getPos Player);" \n
+                         "		};" \n
+                         "		case 7:" \n
+                         "		{" \n
+                         "			""ACE_G_Chemlight_White"" createVehicleLocal (getPos Player);" \n
+                         "		};" \n
+                         "	};" \n
+                         "	Global_var_ChemLight attachTo [Player, [0.05,-0.1,0.1], ""LeftShoulder""];" \n
+                         "	Public_fnc_CreateChemLight = [Player, typeOf Global_var_ChemLight];" \n
+                         "	publicVariableServer ""Public_fnc_CreateChemLight"";" \n
+                         "};"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "true">*/
+                                class true
+                                {
+                                        itemno = 1;
+                                        priority = 0.000000;
+                                        to="End";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/""/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Delete">*/
+                class Delete
+                {
+                        name = "Delete";
+                        itemno = 8;
+                        init = /*%FSM<STATEINIT""">*/"Global_var_ChemLightAttached = false;" \n
+                         "if ((!isNull Player) && (!isNull Global_var_ChemLight)) then" \n
+                         "{" \n
+                         "	detach Global_var_ChemLight;" \n
+                         "	deleteVehicle Global_var_ChemLight;" \n
+                         "	Public_fnc_DeleteChemLight = netID Player;" \n
+                         "	publicVariableServer ""Public_fnc_DeleteChemLight"";" \n
+                         "};"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "true">*/
+                                class true
+                                {
+                                        itemno = 1;
+                                        priority = 0.000000;
+                                        to="End";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/""/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+        };
+        initState="Start";
+        finalStates[] =
+        {
+                "End",
+        };
+};
+/*%FSM</COMPILE>*/

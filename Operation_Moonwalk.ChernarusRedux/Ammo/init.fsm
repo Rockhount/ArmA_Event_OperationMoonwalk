@@ -1,0 +1,123 @@
+/*%FSM<COMPILE "C:\Program Files (x86)\Steam\steamapps\common\Arma 3 Tools\FSMEditor\scriptedFSM.cfg, init">*/
+/*%FSM<HEAD>*/
+/*
+item0[] = {"Start",0,4346,-40.348846,-149.418610,49.651154,-99.418610,0.000000,"Start"};
+item1[] = {"true",8,218,-40.000000,-250.000000,50.000000,-200.000000,0.000000,"true"};
+item2[] = {"End",1,250,95.000000,-250.000000,185.000000,-200.000000,0.000000,"End"};
+link0[] = {0,1};
+link1[] = {1,2};
+globals[] = {0.000000,0,0,0,0,640,480,1,4,6316128,1,-300.000000,300.000000,300.000000,-300.000000,688,587,1};
+window[] = {0,-1,-1,-1,-1,785,26,1466,26,1,706};
+*//*%FSM</HEAD>*/
+class FSM
+{
+        fsmName = "init";
+        class States
+        {
+                /*%FSM<STATE "Start">*/
+                class Start
+                {
+                        name = "Start";
+                        itemno = 0;
+                        init = /*%FSM<STATEINIT""">*/"Global_var_AmmoData =" \n
+                         "[" \n
+                         "	[""OPZ"",""Ammo\Teamleader.fsm"",true]," \n
+                         "	[""Stellvertretender OPZ"",""Ammo\Teamleader.fsm"",true]," \n
+                         "	[""Gruppenführer"",""Ammo\Teamleader.fsm"",true]," \n
+                         "	[""Stellvertretender Gruppenanführer"",""Ammo\Teamleader.fsm"",true]," \n
+                         "	[""Medic"",""Ammo\Medic.fsm"",true]," \n
+                         "	[""MG"",""Ammo\MG.fsm"",true]," \n
+                         "	[""LMG"",""Ammo\LMG.fsm"",true]," \n
+                         "	[""AT"",""Ammo\AT.fsm"",true]," \n
+                         "	[""Automatik Schütze + AT Munition"",""Ammo\AutomaticWithATAmmo.fsm"",true]," \n
+                         "	[""Automatik Schütze + MG Munition"",""Ammo\AutomaticWithMGAmmo.fsm"",true]," \n
+                         "	[""Automatik Schütze + Sprengladungen"",""Ammo\AutomaticWithSatchels.fsm"",true]" \n
+                         "];" \n
+                         "if (isDedicated) then" \n
+                         "{" \n
+                         "	Global_var_PlayerAmmoRequested = [];" \n
+                         "	Global_var_AmmoRequests= [];" \n
+                         "	0 spawn" \n
+                         "	{" \n
+                         "		Global_var_LoopCount = Global_var_LoopCount + 1;" \n
+                         "		while {true} do" \n
+                         "		{" \n
+                         "			{" \n
+                         "				Public_fnc_ApplyPlayerAmmo = _x select 1;" \n
+                         "				(owner (_x select 0)) publicVariableClient ""Public_fnc_ApplyPlayerAmmo"";" \n
+                         "				Global_var_AmmoRequests set [_forEachIndex, 0];" \n
+                         "				Global_var_PlayerAmmoRequested set [_forEachIndex, 0];" \n
+                         "				sleep 3;" \n
+                         "			} forEach Global_var_AmmoRequests;" \n
+                         "			Global_var_AmmoRequests = Global_var_AmmoRequests - [0];" \n
+                         "			Global_var_PlayerAmmoRequested = Global_var_PlayerAmmoRequested - [0];" \n
+                         "			sleep 3;" \n
+                         "		};" \n
+                         "	};" \n
+                         "	""Public_fnc_ManageAmmoRequests"" addPublicVariableEventHandler" \n
+                         "	{" \n
+                         "		(_this select 1) spawn" \n
+                         "		{" \n
+                         "			if !((_this select 0) in Global_var_PlayerAmmoRequested) then" \n
+                         "			{" \n
+                         "				Global_var_PlayerAmmoRequested pushBack (_this select 0);" \n
+                         "				Global_var_AmmoRequests pushBack _this;" \n
+                         "			};" \n
+                         "		};" \n
+                         "	};" \n
+                         "}" \n
+                         "else" \n
+                         "{" \n
+                         "	if (!isServer && {hasInterface}) then" \n
+                         "	{" \n
+                         "		""Public_fnc_ApplyPlayerAmmo"" addPublicVariableEventHandler" \n
+                         "		{" \n
+                         "			clearRadio;" \n
+                         "			if ((Global_var_AmmoData select (_this select 1)) select 2) then" \n
+                         "			{" \n
+                         "				execFSM ((Global_var_AmmoData select (_this select 1)) select 1);" \n
+                         "			}" \n
+                         "			else" \n
+                         "			{" \n
+                         "				((Global_var_AmmoData select (_this select 1)) select 1) createVehicle (getPosATL Player);;" \n
+                         "			};" \n
+                         "		};" \n
+                         "	};" \n
+                         "};"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "true">*/
+                                class true
+                                {
+                                        itemno = 1;
+                                        priority = 0.000000;
+                                        to="End";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/""/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "End">*/
+                class End
+                {
+                        name = "End";
+                        itemno = 2;
+                        init = /*%FSM<STATEINIT""">*/""/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                        };
+                };
+                /*%FSM</STATE>*/
+        };
+        initState="Start";
+        finalStates[] =
+        {
+                "End",
+        };
+};
+/*%FSM</COMPILE>*/

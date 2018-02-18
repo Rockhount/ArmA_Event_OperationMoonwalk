@@ -1,0 +1,241 @@
+/*%FSM<COMPILE "C:\Program Files (x86)\Steam\steamapps\common\Arma 3 Tools\FSMEditor\scriptedFSM.cfg, HandleCivsA3">*/
+/*%FSM<HEAD>*/
+/*
+item0[] = {"Start",0,4346,-40.348839,-141.860458,49.651161,-91.860458,0.000000,"Start"};
+item1[] = {"wait",4,218,-40.000000,-225.000000,50.000000,-175.000000,0.000000,"wait"};
+item2[] = {"Loop",2,250,90.000000,-225.000000,180.000000,-175.000000,0.000000,"Loop"};
+item3[] = {"wait",4,218,90.000000,-145.000000,180.000000,-95.000000,0.000000,"wait"};
+link0[] = {0,1};
+link1[] = {1,2};
+link2[] = {2,3};
+link3[] = {3,2};
+globals[] = {0.000000,0,0,0,0,640,480,1,9,6316128,1,-222.801254,436.753998,206.383850,-409.938385,656,587,1};
+window[] = {0,-1,-1,-1,-1,785,26,1466,26,1,674};
+*//*%FSM</HEAD>*/
+class FSM
+{
+        fsmName = "HandleCivsA3";
+        class States
+        {
+                /*%FSM<STATE "Start">*/
+                class Start
+                {
+                        name = "Start";
+                        itemno = 0;
+                        init = /*%FSM<STATEINIT""">*/"private _Citys = _this;" \n
+                         "west setFriend [civilian, 1];" \n
+                         "east setFriend [civilian, 1];" \n
+                         "civilian setFriend [west, 1];" \n
+                         "civilian setFriend [east, 1];" \n
+                         "private _Local_var_CivilGroup = createGroup civilian;" \n
+                         "private _Local_fnc_CivilSim =" \n
+                         "{" \n
+                         "	private _Unit = _this;" \n
+                         "	_Unit addEventHandler" \n
+                         "	[" \n
+                         "		""killed""," \n
+                         "		{" \n
+                         "			""HandleServer"" callExtension (Global_var_ServerIP + ""|"" + Global_var_UMissionID + ""|"" + str [""AddObjectToDelete"",3,netId (_this select 0)]);" \n
+                         "		}" \n
+                         "	];" \n
+                         "	_Unit addEventHandler" \n
+                         "	[" \n
+                         "		""FiredNear""," \n
+                         "		{" \n
+                         "			if ((rank (_this select 0) == ""PRIVATE"") && {alive (_this select 0)}) then" \n
+                         "			{" \n
+                         "				(_this select 0) spawn" \n
+                         "				{" \n
+                         "					_this setRank ""COLONEL"";" \n
+                         "					Global_var_LoopCount = Global_var_LoopCount + 1;" \n
+                         "					_this playMove ""AMOVPPNEMSTPSNONWNONDNON_INJURED"";" \n
+                         "					sleep 1;" \n
+                         "					_this disableAI ""ANIM"";" \n
+                         "					_this disableAI ""MOVE"";" \n
+                         "					sleep 60;" \n
+                         "					if (!(isNull _this) && {alive _this}) then" \n
+                         "					{" \n
+                         "						_this enableAI ""ANIM"";" \n
+                         "						_this enableAI ""MOVE"";" \n
+                         "						_this playMove ""AmovPpneMstpSnonWnonDnon_AmovPercMstpSnonWnonDnon"";" \n
+                         "					};" \n
+                         "					_this setRank ""PRIVATE"";" \n
+                         "					Global_var_LoopCount = Global_var_LoopCount - 1;" \n
+                         "				};" \n
+                         "			};" \n
+                         "		}" \n
+                         "	];" \n
+                         "	_Unit forceWalk true;" \n
+                         "	_Unit setCombatMode ""BLUE"";" \n
+                         "	_Unit setBehaviour ""CARELESS"";" \n
+                         "	_Unit disableConversation true;" \n
+                         "	_Unit disableAI ""TARGET"";" \n
+                         "	_Unit disableAI ""AUTOTARGET"";" \n
+                         "	_Unit disableAI ""FSM"";" \n
+                         "	_Unit disableAI ""AIMINGERROR"";" \n
+                         "	_Unit disableAI ""SUPPRESSION"";" \n
+                         "	_Unit disableAI ""COVER"";" \n
+                         "	_Unit disableAI ""AUTOCOMBAT"";" \n
+                         "	_Unit setRank ""PRIVATE"";" \n
+                         "};" \n
+                         "private _Local_fnc_GetAllHousePositions =" \n
+                         "{" \n
+                         "	private _House = _this;" \n
+                         "	private _Positions = [];" \n
+                         "	private _CurPos = _House buildingPos 0;" \n
+                         "	private _i = 0;" \n
+                         "	while {(_CurPos select 0) != 0} do" \n
+                         "	{" \n
+                         "		_i = _i + 1;" \n
+                         "		if ((_CurPos select 2 < 1) || {(_CurPos select 2 > 1) && {lineIntersects [_CurPos, [_CurPos select 0, _CurPos select 1, (_CurPos select 2) + 20]]}}) then" \n
+                         "		{" \n
+                         "			_Positions pushBack _CurPos;" \n
+                         "		};" \n
+                         "		_CurPos = _House buildingPos _i;" \n
+                         "	};" \n
+                         "	_Positions;" \n
+                         "};" \n
+                         "Global_var_Civs = [];" \n
+                         "private _Local_var_AssignCivNameData = [];" \n
+                         "Private [""_Time"", ""_Local_var_CurUnit"", ""_Local_var_Result""];" \n
+                         "{" \n
+                         "	private _Local_var_AllPossibleHousePositions = [];" \n
+                         "	private _Local_var_AllHouses = (_x select 0) nearObjects [""House"", _x select 1];" \n
+                         "	{" \n
+                         "		_Local_var_AllPossibleHousePositions append (_x call _Local_fnc_GetAllHousePositions);" \n
+                         "	} forEach _Local_var_AllHouses;" \n
+                         "	if (count _Local_var_AllPossibleHousePositions > 0) then" \n
+                         "	{" \n
+                         "		_Local_var_Result = call compile (""HandleServer"" callExtension (Global_var_ServerIP + ""|"" + Global_var_UMissionID + ""|"" + str [""AddCivWayPos"",_x select 2,_Local_var_AllPossibleHousePositions]));" \n
+                         "		if (!isNil ""_Local_var_Result"") then" \n
+                         "		{" \n
+                         "			if (typeName _Local_var_Result == ""ARRAY"") then" \n
+                         "			{" \n
+                         "				Global_var_Civs pushBack [];" \n
+                         "				{" \n
+                         "					_Local_var_CurUnit = _Local_var_CivilGroup createUnit [selectRandom Global_var_CivilClasses, _x select 0, [], 0, ""NONE""];" \n
+                         "					_Local_var_CurUnit setPos (_x select 0);" \n
+                         "					(_Local_var_CurUnit) spawn _Local_fnc_CivilSim;" \n
+                         "					_Local_var_CurUnit doMove (_x select 1);" \n
+                         "					_Local_var_CurUnit forceWalk true;" \n
+                         "					_Local_var_CurUnit setCombatMode ""BLUE"";" \n
+                         "					_Local_var_CurUnit setBehaviour ""CARELESS"";" \n
+                         "					(Global_var_Civs select (_x select 2)) set [_x select 3, _Local_var_CurUnit];" \n
+                         "					_Local_var_AssignCivNameData pushBack [netId _Local_var_CurUnit,_x select 2,_x select 3];" \n
+                         "				} forEach _Local_var_Result;" \n
+                         "			}" \n
+                         "			else" \n
+                         "			{" \n
+                         "				diag_log _Local_var_Result;" \n
+                         "			};" \n
+                         "		};" \n
+                         "	};" \n
+                         "} forEach _Citys;" \n
+                         "_Local_var_Result = call compile (""HandleServer"" callExtension (Global_var_ServerIP + ""|"" + Global_var_UMissionID + ""|"" + str [""AssignCivNames"",_Local_var_AssignCivNameData]));" \n
+                         "if ((!isNil ""_Local_var_Result"") && {_Local_var_Result != """"}) then" \n
+                         "{" \n
+                         "	diag_log _Local_var_Result;" \n
+                         "};" \n
+                         "_Time = time + 5;"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "wait">*/
+                                class wait
+                                {
+                                        itemno = 1;
+                                        priority = 0.000000;
+                                        to="Loop";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"time > _Time"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Loop">*/
+                class Loop
+                {
+                        name = "Loop";
+                        itemno = 2;
+                        init = /*%FSM<STATEINIT""">*/"_Local_var_AssignCivNameData = [];" \n
+                         "_Local_var_Result = call compile (""HandleServer"" callExtension (Global_var_ServerIP + ""|"" + Global_var_UMissionID + ""|"" + ""[GetCivData""));" \n
+                         "if (!isNil ""_Local_var_Result"") then" \n
+                         "{" \n
+                         "	if (typeName _Local_var_Result == ""ARRAY"") then" \n
+                         "	{" \n
+                         "		{" \n
+                         "			_Local_var_CurUnit = (Global_var_Civs select (_x select 1)) select (_x select 2);" \n
+                         "			_Local_var_CurUnit doMove (_x select 0);" \n
+                         "			_Local_var_CurUnit forceWalk true;" \n
+                         "			_Local_var_CurUnit setCombatMode ""BLUE"";" \n
+                         "			_Local_var_CurUnit setBehaviour ""CARELESS"";" \n
+                         "		} forEach (_Local_var_Result select 0);" \n
+                         "		{" \n
+                         "			_Local_var_CurUnit = _Local_var_CivilGroup createUnit [selectRandom Global_var_CivilClasses, _x select 0, [], 0, ""NONE""];" \n
+                         "			_Local_var_CurUnit setPos (_x select 0);" \n
+                         "			(_Local_var_CurUnit) spawn _Local_fnc_CivilSim;" \n
+                         "			_Local_var_CurUnit doMove (_x select 1);" \n
+                         "			_Local_var_CurUnit forceWalk true;" \n
+                         "			_Local_var_CurUnit setCombatMode ""BLUE"";" \n
+                         "			_Local_var_CurUnit setBehaviour ""CARELESS"";" \n
+                         "			(Global_var_Civs select (_x select 2)) set [_x select 3, _Local_var_CurUnit];" \n
+                         "			_Local_var_AssignCivNameData pushBack [netId _Local_var_CurUnit,_x select 2,_x select 3];" \n
+                         "		} forEach (_Local_var_Result select 1);" \n
+                         "	}" \n
+                         "	else" \n
+                         "	{" \n
+                         "		diag_log _Local_var_Result;" \n
+                         "	};" \n
+                         "};" \n
+                         "_Local_var_Result = call compile (""HandleServer"" callExtension (Global_var_ServerIP + ""|"" + Global_var_UMissionID + ""|"" + ""[GetCivCacheData""));" \n
+                         "if (!isNil ""_Local_var_Result"") then" \n
+                         "{" \n
+                         "	if (typeName _Local_var_Result == ""ARRAY"") then" \n
+                         "	{" \n
+                         "		{" \n
+                         "			((Global_var_Civs select (_x select 0)) select (_x select 1)) enableSimulation true;" \n
+                         "		} forEach (_Local_var_Result select 0);" \n
+                         "		{" \n
+                         "			((Global_var_Civs select (_x select 0)) select (_x select 1)) enableSimulation false;" \n
+                         "		} forEach (_Local_var_Result select 1);" \n
+                         "	}" \n
+                         "	else" \n
+                         "	{" \n
+                         "		diag_log _Local_var_Result;" \n
+                         "	};" \n
+                         "};" \n
+                         "if ((count _Local_var_AssignCivNameData) > 0) then" \n
+                         "{" \n
+                         "	_Local_var_Result = call compile (""HandleServer"" callExtension (Global_var_ServerIP + ""|"" + Global_var_UMissionID + ""|"" + str [""AssignCivNames"",_Local_var_AssignCivNameData]));" \n
+                         "	if ((!isNil ""_Local_var_Result"") && {_Local_var_Result != """"}) then" \n
+                         "	{" \n
+                         "		diag_log _Local_var_Result;" \n
+                         "	};" \n
+                         "};" \n
+                         "_Time = time + 4.5 + (random 0.5);"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "wait">*/
+                                class wait
+                                {
+                                        itemno = 3;
+                                        priority = 0.000000;
+                                        to="Loop";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"time > _Time"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+        };
+        initState="Start";
+        finalStates[] =
+        {
+        };
+};
+/*%FSM</COMPILE>*/

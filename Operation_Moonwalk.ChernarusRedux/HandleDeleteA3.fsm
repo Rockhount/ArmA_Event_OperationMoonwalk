@@ -1,0 +1,118 @@
+/*%FSM<COMPILE "C:\Program Files (x86)\Steam\steamapps\common\Arma 3 Tools\FSMEditor\scriptedFSM.cfg, HandleDeleteA3">*/
+/*%FSM<HEAD>*/
+/*
+item0[] = {"Start",0,250,-40.348839,-141.860458,49.651161,-91.860458,0.000000,"Start"};
+item1[] = {"Server",4,218,-40.116272,-220.348831,49.883728,-170.348831,0.000000,"Server"};
+item2[] = {"Delete",2,4346,84.302322,-222.093018,174.302185,-172.093018,0.000000,"Delete"};
+item3[] = {"wait",4,218,211.046494,-221.511627,301.046570,-171.511627,0.000000,"wait"};
+item4[] = {"Player_HC",4,218,84.302330,-141.279114,174.302368,-91.279068,0.000000,"Player/HC"};
+item5[] = {"End",1,250,211.046524,-141.860382,301.046539,-91.860481,0.000000,"End"};
+link0[] = {0,1};
+link1[] = {0,4};
+link2[] = {1,2};
+link3[] = {2,3};
+link4[] = {3,2};
+link5[] = {4,5};
+globals[] = {0.000000,0,0,0,0,640,480,1,10,6316128,1,-118.668480,312.114349,91.033356,-408.024475,530,587,1};
+window[] = {0,-1,-1,-1,-1,837,78,1518,78,1,548};
+*//*%FSM</HEAD>*/
+class FSM
+{
+        fsmName = "HandleDeleteA3";
+        class States
+        {
+                /*%FSM<STATE "Start">*/
+                class Start
+                {
+                        name = "Start";
+                        itemno = 0;
+                        init = /*%FSM<STATEINIT""">*/"Private [""_Time"", ""_Local_var_Result""];"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "Player_HC">*/
+                                class Player_HC
+                                {
+                                        itemno = 4;
+                                        priority = 0.000000;
+                                        to="End";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"hasInterface || {!isServer && {!hasInterface}}"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                                /*%FSM<LINK "Server">*/
+                                class Server
+                                {
+                                        itemno = 1;
+                                        priority = 0.000000;
+                                        to="Delete";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"isDedicated"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Delete">*/
+                class Delete
+                {
+                        name = "Delete";
+                        itemno = 2;
+                        init = /*%FSM<STATEINIT""">*/"_Time = time + 900;" \n
+                         "_Local_var_Result = call compile (""HandleServer"" callExtension (Global_var_ServerIP + ""|"" + Global_var_UMissionID + ""|"" + ""[GetObjectsToDelete""));" \n
+                         "if (!isNil ""_Local_var_Result"") then" \n
+                         "{" \n
+                         "	if (typeName _Local_var_Result == ""ARRAY"") then" \n
+                         "	{" \n
+                         "		{" \n
+                         "			_Local_var_CurUnit = objectFromNetId _x;" \n
+                         "			if (!isNull _Local_var_CurUnit) then" \n
+                         "			{" \n
+                         "				deleteVehicle _Local_var_CurUnit;" \n
+                         "			};" \n
+                         "		} forEach _Local_var_Result;" \n
+                         "	}" \n
+                         "	else" \n
+                         "	{" \n
+                         "		diag_log _Local_var_Result;" \n
+                         "	};" \n
+                         "};"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "wait">*/
+                                class wait
+                                {
+                                        itemno = 3;
+                                        priority = 0.000000;
+                                        to="Delete";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"time > _Time"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "End">*/
+                class End
+                {
+                        name = "End";
+                        itemno = 5;
+                        init = /*%FSM<STATEINIT""">*/""/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                        };
+                };
+                /*%FSM</STATE>*/
+        };
+        initState="Start";
+        finalStates[] =
+        {
+                "End",
+        };
+};
+/*%FSM</COMPILE>*/

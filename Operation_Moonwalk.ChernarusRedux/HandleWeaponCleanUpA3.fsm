@@ -1,0 +1,116 @@
+/*%FSM<COMPILE "C:\Program Files (x86)\Steam\steamapps\common\Arma 3 Tools\FSMEditor\scriptedFSM.cfg, HandleWeaponCleanUpA3">*/
+/*%FSM<HEAD>*/
+/*
+item0[] = {"Start",0,250,-40.348846,-149.418610,49.651154,-99.418610,0.000000,"Start"};
+item1[] = {"true",8,218,-170.000000,-355.000000,-80.000000,-305.000000,0.000000,"true"};
+item2[] = {"End",1,250,90.000000,-355.000000,180.000000,-305.000000,0.000000,"End"};
+item3[] = {"Not_Server",4,218,-40.116302,-250.000015,49.883698,-200.000000,0.000000,"Not Server"};
+item4[] = {"Server",4,4314,90.000000,-150.000000,180.000000,-100.000000,0.000000,"Server"};
+item5[] = {"EventHandler",2,250,-170.000000,-250.000000,-80.000000,-200.000000,0.000000,"EventHandler"};
+link0[] = {0,3};
+link1[] = {0,4};
+link2[] = {1,2};
+link3[] = {3,5};
+link4[] = {4,2};
+link5[] = {5,1};
+globals[] = {0.000000,0,0,0,0,640,480,1,7,6316128,1,-300.000000,300.000000,-79.069794,-420.348846,1032,587,1};
+window[] = {0,-1,-1,-1,-1,941,182,1622,182,1,1050};
+*//*%FSM</HEAD>*/
+class FSM
+{
+        fsmName = "HandleWeaponCleanUpA3";
+        class States
+        {
+                /*%FSM<STATE "Start">*/
+                class Start
+                {
+                        name = "Start";
+                        itemno = 0;
+                        init = /*%FSM<STATEINIT""">*/""/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "Server">*/
+                                class Server
+                                {
+                                        itemno = 4;
+                                        priority = 0.000000;
+                                        to="End";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"!hasInterface"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                                /*%FSM<LINK "Not_Server">*/
+                                class Not_Server
+                                {
+                                        itemno = 3;
+                                        priority = 0.000000;
+                                        to="EventHandler";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"hasInterface"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "End">*/
+                class End
+                {
+                        name = "End";
+                        itemno = 2;
+                        init = /*%FSM<STATEINIT""">*/""/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "EventHandler">*/
+                class EventHandler
+                {
+                        name = "EventHandler";
+                        itemno = 5;
+                        init = /*%FSM<STATEINIT""">*/"call compile format[" \n
+                         """" \n
+                         "	Player addEventHandler ['Put'," \n
+                         "	{" \n
+                         "		(_this select 1) spawn" \n
+                         "		{" \n
+                         "			if (((typeOf _this) in ['GroundWeaponHolder', 'WeaponHolderSimulated']) && {local _this}) then" \n
+                         "			{" \n
+                         "				sleep %1;" \n
+                         "				if (!isNull _this) then" \n
+                         "				{" \n
+                         "					deleteVehicle _this;" \n
+                         "				};" \n
+                         "			};" \n
+                         "		};" \n
+                         "	}];" \n
+                         """, _this];"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "true">*/
+                                class true
+                                {
+                                        itemno = 1;
+                                        priority = 0.000000;
+                                        to="End";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/""/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+        };
+        initState="Start";
+        finalStates[] =
+        {
+                "End",
+        };
+};
+/*%FSM</COMPILE>*/

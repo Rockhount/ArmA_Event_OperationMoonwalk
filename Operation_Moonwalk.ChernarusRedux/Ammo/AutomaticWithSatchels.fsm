@@ -1,0 +1,117 @@
+/*%FSM<COMPILE "C:\Program Files (x86)\Steam\steamapps\common\Arma 3 Tools\FSMEditor\scriptedFSM.cfg, AutomaticWithSatchels">*/
+/*%FSM<HEAD>*/
+/*
+item0[] = {"Start",0,250,-40.348846,-149.418610,49.651154,-99.418610,0.000000,"Start"};
+item1[] = {"wait",4,218,-40.116241,-259.883698,49.883759,-209.883713,0.000000,"wait"};
+item2[] = {"End",1,4346,99.883759,-259.883698,189.883759,-209.883713,0.000000,"End"};
+link0[] = {0,1};
+link1[] = {1,2};
+globals[] = {0.000000,0,0,0,0,640,480,1,6,6316128,1,-300.000000,300.000000,300.000000,-300.000000,716,587,1};
+window[] = {0,-1,-1,-1,-1,785,26,1466,26,1,734};
+*//*%FSM</HEAD>*/
+class FSM
+{
+        fsmName = "AutomaticWithSatchels";
+        class States
+        {
+                /*%FSM<STATE "Start">*/
+                class Start
+                {
+                        name = "Start";
+                        itemno = 0;
+                        init = /*%FSM<STATEINIT""">*/"removeAllWeapons Player;" \n
+                         "removeAllItems Player;" \n
+                         "removeAllAssignedItems Player;" \n
+                         "removeUniform Player;" \n
+                         "removeVest Player;" \n
+                         "removeBackpack Player;" \n
+                         "removeHeadgear Player;" \n
+                         "removeGoggles Player;" \n
+                         "" \n
+                         "Player forceAddUniform ""usm_bdu_w_m"";" \n
+                         "Player addItemToUniform ""ACE_Flashlight_MX991"";" \n
+                         "for ""_i"" from 1 to 5 do {Player addItemToUniform ""ACE_morphine"";};" \n
+                         "Player addItemToUniform ""ACE_EarPlugs"";" \n
+                         "Player addVest ""usm_vest_rba_lbe_gr"";" \n
+                         "for ""_i"" from 1 to 2 do {Player addItemToVest ""ACE_fieldDressing"";};" \n
+                         "for ""_i"" from 1 to 4 do {Player addItemToVest ""rhs_mag_30Rnd_556x45_M855_Stanag_Tracer_Red"";};" \n
+                         "Player addBackpack ""usm_pack_alice"";" \n
+                         "Player addItemToBackpack ""ACE_salineIV"";" \n
+                         "Player addItemToBackpack ""ACE_Clacker"";" \n
+                         "for ""_i"" from 1 to 2 do {Player addItemToBackpack ""rhs_mag_an_m8hc"";};" \n
+                         "for ""_i"" from 1 to 2 do {Player addItemToBackpack ""rhs_mag_30Rnd_556x45_M855_Stanag_Tracer_Red"";};" \n
+                         "for ""_i"" from 1 to 3 do {Player addItemToBackpack ""SatchelCharge_Remote_Mag"";};" \n
+                         "Player addHeadgear ""usm_helmet_pasgt_w_m"";" \n
+                         "" \n
+                         "Player addWeapon ""rhs_weap_m16a4"";" \n
+                         "Player addPrimaryWeaponItem ""CUP_optic_ACOG"";" \n
+                         "" \n
+                         "Player linkItem ""ItemMap"";" \n
+                         "Player linkItem ""ItemCompass"";" \n
+                         "Player linkItem ""ItemWatch"";" \n
+                         "Player addItem ""ACRE_PRC148"";" \n
+                         "" \n
+                         "private _Local_var_Time = time + 5;"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "wait">*/
+                                class wait
+                                {
+                                        itemno = 1;
+                                        priority = 0.000000;
+                                        to="End";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"time > _Local_var_Time"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "End">*/
+                class End
+                {
+                        name = "End";
+                        itemno = 2;
+                        init = /*%FSM<STATEINIT""">*/"switch (call Global_fnc_GetGroup) do" \n
+                         "{" \n
+                         "	case 1:" \n
+                         "	{" \n
+                         "		[1] call acre_api_fnc_setCurrentRadioChannelNumber;" \n
+                         "	};" \n
+                         "	case 2:" \n
+                         "	{" \n
+                         "		[2] call acre_api_fnc_setCurrentRadioChannelNumber;" \n
+                         "	};" \n
+                         "	case 3:" \n
+                         "	{" \n
+                         "		[3] call acre_api_fnc_setCurrentRadioChannelNumber;" \n
+                         "	};" \n
+                         "	case 4:" \n
+                         "	{" \n
+                         "		[4] call acre_api_fnc_setCurrentRadioChannelNumber;" \n
+                         "	};" \n
+                         "	case 6:" \n
+                         "	{" \n
+                         "		[3] call acre_api_fnc_setCurrentRadioChannelNumber;" \n
+                         "	};" \n
+                         "	case 7:" \n
+                         "	{" \n
+                         "		[2] call acre_api_fnc_setCurrentRadioChannelNumber;" \n
+                         "	};" \n
+                         "};"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                        };
+                };
+                /*%FSM</STATE>*/
+        };
+        initState="Start";
+        finalStates[] =
+        {
+                "End",
+        };
+};
+/*%FSM</COMPILE>*/
